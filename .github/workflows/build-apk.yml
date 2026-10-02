@@ -5,6 +5,9 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_NODE_TYPE: node24
+
 jobs:
   build:
     runs-on: ubuntu-latest
