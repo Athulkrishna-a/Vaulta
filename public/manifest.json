@@ -1,0 +1,31 @@
+{
+  "name": "Vaulta — Smart Expense & Money Tracker",
+  "short_name": "Vaulta",
+  "description": "Android-first personal expense and budget tracking application",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0F1118",
+  "theme_color": "#6C5CE7",
+  "icons": [
+    {
+      "src": "/gemini-svg.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Add Expense",
+      "short_name": "Add",
+      "description": "Quickly record a new transaction",
+      "url": "/?action=add_expense",
+      "icons": [
+        {
+          "src": "/gemini-svg.svg",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

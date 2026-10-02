@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <clipPath id="squircle-clip-4">
+      <rect x="32" y="32" width="448" height="448" rx="108" ry="108" />
+    </clipPath>
+  </defs>
+  <g clip-path="url(#squircle-clip-4)">
+    <!-- Base Charcoal Finish -->
+    <rect width="512" height="512" fill="#111827" />
+    
+    <!-- Top Outflow Arc (Coral Red) -->
+    <path d="M170 236 C170 178 214 136 276 136 C328 136 366 170 374 216" 
+          fill="none" stroke="#F43F5E" stroke-width="26" stroke-linecap="round" />
+    <path d="M352 232 L378 214 L396 244" 
+          fill="none" stroke="#F43F5E" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" />
+          
+    <!-- Bottom Inflow Arc (Clean Crisp White) -->
+    <path d="M342 276 C342 334 298 376 236 376 C184 376 146 342 138 296" 
+          fill="none" stroke="#FFFFFF" stroke-width="26" stroke-linecap="round" />
+    <path d="M160 280 L134 298 L116 268" 
+          fill="none" stroke="#FFFFFF" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+</svg>
