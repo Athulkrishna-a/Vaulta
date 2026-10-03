@@ -19,16 +19,19 @@ export const TodaysSpendCard: React.FC = () => {
       sx={{
         borderRadius: '24px',
         p: 2.5,
-        backgroundColor: theme.palette.mode === 'dark' ? '#0F3025' : '#122D24', // Deep emerald background matching Mockup 3
-        color: '#FFFFFF',
-        boxShadow: '0 8px 24px rgba(18, 45, 36, 0.25)',
+        backgroundColor: 'rgba(6, 36, 17, 0.78)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        border: '1px solid rgba(198, 255, 46, 0.16)',
+        color: '#F0FDF4',
+        boxShadow: '0 8px 24px rgba(3, 28, 12, 0.4)',
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
-        <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontWeight: 600 }}>
+        <Typography variant="caption" sx={{ color: '#86A789', fontWeight: 600 }}>
           TODAY'S SPEND
         </Typography>
-        <Sparkles size={16} color="#00D1A7" />
+        <Sparkles size={16} color="#C6FF2E" />
       </Box>
 
       <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.5, my: 0.5 }}>
@@ -37,28 +40,29 @@ export const TodaysSpendCard: React.FC = () => {
           sx={{
             fontSize: '1.8rem',
             fontWeight: 800,
-            color: '#FFFFFF',
+            color: '#F0FDF4',
           }}
         />
 
         <Chip
-          icon={<TrendingDown size={14} color="#00D1A7" />}
+          icon={<TrendingDown size={14} color="#C6FF2E" />}
           label="↘ 6% than yesterday"
           size="small"
           sx={{
-            backgroundColor: 'rgba(0, 209, 167, 0.18)',
-            color: '#00D1A7',
+            backgroundColor: 'rgba(198, 255, 46, 0.16)',
+            color: '#C6FF2E',
             fontWeight: 700,
             fontSize: '0.72rem',
             borderRadius: '8px',
+            border: '1px solid rgba(198, 255, 46, 0.2)',
             '& .MuiChip-icon': {
-              color: '#00D1A7',
+              color: '#C6FF2E',
             },
           }}
         />
       </Box>
 
-      <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.65)', fontWeight: 500 }}>
+      <Typography variant="caption" sx={{ color: '#86A789', fontWeight: 500 }}>
         Mostly on Food & Dining • Live Tracking
       </Typography>
     </Box>

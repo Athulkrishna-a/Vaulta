@@ -16,16 +16,19 @@ export const TopHeader: React.FC = () => {
       sx={{
         position: 'sticky',
         top: 0,
+        width: '100%',
+        borderRadius: 0,
+        pt: 'calc(env(safe-area-inset-top, 0px) + 34px)',
+        pb: 1.5,
+        px: 2,
         zIndex: 1050,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        py: 1.5,
-        px: 2,
-        backgroundColor: theme.palette.mode === 'dark' ? 'rgba(10, 14, 26, 0.85)' : 'rgba(244, 246, 248, 0.85)',
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-        borderBottom: theme.palette.mode === 'dark' ? '1px solid rgba(255, 255, 255, 0.05)' : '1px solid rgba(0, 0, 0, 0.05)',
+        backgroundColor: 'rgba(15, 20, 32, 0.94)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(0, 245, 160, 0.15)',
         transition: 'all 0.2s ease',
       }}
     >
@@ -36,10 +39,11 @@ export const TopHeader: React.FC = () => {
             width: 44,
             height: 44,
             borderRadius: '16px',
-            backgroundColor: theme.palette.primary.main,
+            backgroundColor: '#00F5A0',
+            color: '#0B0E17',
             fontWeight: 800,
             fontSize: '1.1rem',
-            boxShadow: '0 4px 12px rgba(108, 92, 231, 0.25)',
+            boxShadow: '0 4px 14px rgba(0, 245, 160, 0.35)',
           }}
         >
           👤
@@ -48,7 +52,7 @@ export const TopHeader: React.FC = () => {
           <Typography
             variant="caption"
             sx={{
-              color: theme.palette.text.secondary,
+              color: '#8A95AD',
               fontWeight: 600,
               display: 'block',
               fontSize: '0.72rem',
@@ -60,7 +64,7 @@ export const TopHeader: React.FC = () => {
             variant="subtitle1"
             sx={{
               fontWeight: 800,
-              color: theme.palette.text.primary,
+              color: '#F4F6FC',
               lineHeight: 1.1,
               fontFamily: 'Space Grotesk',
             }}
@@ -76,12 +80,13 @@ export const TopHeader: React.FC = () => {
           onClick={() => navigate('/investments')}
           title="Investments Portfolio"
           sx={{
-            backgroundColor: theme.palette.background.paper,
-            color: '#F1C40F',
+            backgroundColor: 'rgba(0, 245, 160, 0.1)',
+            color: '#00F5A0',
             width: 42,
             height: 42,
             borderRadius: '14px',
-            boxShadow: theme.palette.mode === 'light' ? '0 4px 12px rgba(0,0,0,0.03)' : 'none',
+            border: '1px solid rgba(0, 245, 160, 0.18)',
+            '&:hover': { backgroundColor: 'rgba(0, 245, 160, 0.2)' },
           }}
         >
           <TrendingUp size={20} />
@@ -91,12 +96,13 @@ export const TopHeader: React.FC = () => {
           onClick={() => navigate('/calculator')}
           title="Calculator"
           sx={{
-            backgroundColor: theme.palette.background.paper,
-            color: theme.palette.text.primary,
+            backgroundColor: 'rgba(0, 245, 160, 0.1)',
+            color: '#00F5A0',
             width: 42,
             height: 42,
             borderRadius: '14px',
-            boxShadow: theme.palette.mode === 'light' ? '0 4px 12px rgba(0,0,0,0.03)' : 'none',
+            border: '1px solid rgba(0, 245, 160, 0.18)',
+            '&:hover': { backgroundColor: 'rgba(0, 245, 160, 0.2)' },
           }}
         >
           <Calculator size={20} />
@@ -107,12 +113,13 @@ export const TopHeader: React.FC = () => {
             onClick={() => navigate('/settings')}
             title="Settings"
             sx={{
-              backgroundColor: theme.palette.background.paper,
-              color: theme.palette.text.primary,
+              backgroundColor: 'rgba(0, 245, 160, 0.1)',
+              color: '#00F5A0',
               width: 42,
               height: 42,
               borderRadius: '14px',
-              boxShadow: theme.palette.mode === 'light' ? '0 4px 12px rgba(0,0,0,0.03)' : 'none',
+              border: '1px solid rgba(0, 245, 160, 0.18)',
+              '&:hover': { backgroundColor: 'rgba(0, 245, 160, 0.2)' },
             }}
           >
             <Settings size={20} />

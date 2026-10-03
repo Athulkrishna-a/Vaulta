@@ -136,7 +136,7 @@ export const InvestmentTypesPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ p: 2, pb: 12 }}>
+    <Box sx={{ p: 2, pt: 'calc(env(safe-area-inset-top, 0px) + 24px)', pb: 12 }}>
       {/* Header */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2.5, gap: 1.5 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, minWidth: 0, flex: 1 }}>
@@ -166,24 +166,22 @@ export const InvestmentTypesPage: React.FC = () => {
           </Box>
         </Box>
 
-        <Button
-          variant="contained"
-          size="small"
-          startIcon={<Plus size={16} />}
+        {/* Top Right Add Icon Only */}
+        <IconButton
           onClick={handleOpenAdd}
           sx={{
-            borderRadius: '16px',
+            width: 42,
+            height: 42,
+            borderRadius: '14px',
             backgroundColor: '#F1C40F',
             color: '#000000',
-            fontWeight: 800,
-            fontFamily: 'Space Grotesk',
-            whiteSpace: 'nowrap',
-            flexShrink: 0,
+            boxShadow: '0 4px 14px rgba(241, 196, 15, 0.4)',
             '&:hover': { backgroundColor: '#F39C12' },
           }}
+          title="Add Investment Type"
         >
-          Add Type
-        </Button>
+          <Plus size={22} strokeWidth={2.5} />
+        </IconButton>
       </Box>
 
       {/* Drag & Drop List of Investment Types */}
@@ -203,15 +201,27 @@ export const InvestmentTypesPage: React.FC = () => {
         ))}
       </Reorder.Group>
 
-      {/* Add / Edit Dialog */}
+      {/* Add / Edit Dialog with High-Contrast Vivid Gold Dark Glass */}
       <Dialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         fullWidth
         maxWidth="xs"
-        slotProps={{ paper: { sx: { borderRadius: '28px', p: 1 } } }}
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: '28px',
+              p: 1.5,
+              background: 'radial-gradient(ellipse 90% 60% at 50% 0%, rgba(241, 196, 15, 0.22) 0%, rgba(15, 20, 32, 0.98) 100%)',
+              color: '#F4F6FC',
+              border: '1.5px solid rgba(241, 196, 15, 0.4)',
+              boxShadow: '0 20px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(241, 196, 15, 0.25)',
+              backdropFilter: 'blur(30px)',
+            },
+          },
+        }}
       >
-        <DialogTitle sx={{ fontWeight: 800 }}>
+        <DialogTitle sx={{ fontWeight: 800, fontFamily: 'Space Grotesk', fontSize: '1.25rem', color: '#F1C40F' }}>
           {editingIndex !== null ? 'Edit Investment Type' : 'Add Custom Investment Type'}
         </DialogTitle>
         <DialogContent>
@@ -221,12 +231,37 @@ export const InvestmentTypesPage: React.FC = () => {
             placeholder="e.g. Bonds / P2P Lending / Index Funds"
             value={typeName}
             onChange={(e) => setTypeName(e.target.value)}
-            sx={{ my: 2 }}
+            sx={{
+              my: 2,
+              '& label': { color: '#8A95AD', fontWeight: 600 },
+              '& input': { color: '#F4F6FC', fontWeight: 700, fontFamily: 'Space Grotesk' },
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '16px',
+                backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                '&.Mui-focused': { border: '1.5px solid #F1C40F' },
+              },
+            }}
           />
         </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleSave}>
+        <DialogActions sx={{ px: 3, pb: 2.5, gap: 1 }}>
+          <Button onClick={() => setDialogOpen(false)} sx={{ color: '#8A95AD', fontWeight: 700, fontFamily: 'Space Grotesk' }}>
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleSave}
+            sx={{
+              borderRadius: '16px',
+              backgroundColor: '#F1C40F',
+              color: '#000000',
+              fontWeight: 800,
+              fontFamily: 'Space Grotesk',
+              px: 3.5,
+              py: 1,
+              '&:hover': { backgroundColor: '#F39C12' },
+            }}
+          >
             Save
           </Button>
         </DialogActions>

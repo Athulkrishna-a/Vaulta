@@ -4,16 +4,19 @@ import {
   Typography,
   Grid,
   Button,
+  IconButton,
   useTheme,
   Chip,
 } from '@mui/material';
-import { Plus, TrendingUp, PieChart as PieIcon, ShieldCheck, DollarSign } from 'lucide-react';
+import { Plus, TrendingUp, PieChart as PieIcon, ShieldCheck, DollarSign, ChevronLeft } from 'lucide-react';
 import { useAppData } from '../app/providers/AppDataProvider';
 import { GlassCard } from '../components/common/GlassCard';
 import { CurrencyText } from '../components/common/CurrencyText';
 import { TransactionItem } from '../components/transactions/TransactionItem';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts';
 import { Transaction } from '../types';
+import { useNavigate } from 'react-router-dom';
+import { useHaptics } from '../hooks/useHaptics';
 
 interface InvestmentsPageProps {
   onEditTransaction: (tx: Transaction) => void;
@@ -36,6 +39,8 @@ export const InvestmentsPage: React.FC<InvestmentsPageProps> = ({
   onOpenAddInvestment,
 }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const haptics = useHaptics();
   const { transactions, totalInvestments, deleteTransaction } = useAppData();
 
   const investmentTxs = useMemo(() => {
@@ -61,16 +66,35 @@ export const InvestmentsPage: React.FC<InvestmentsPageProps> = ({
   }, [investmentTxs, totalInvestments]);
 
   return (
-    <Box sx={{ p: 2, pb: 14 }}>
-      {/* Top Header */}
+    <Box sx={{ p: 2, pt: 'calc(env(safe-area-inset-top, 0px) + 24px)', pb: 14 }}>
+      {/* Top Header with Back Arrow */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2.5 }}>
-        <Box>
-          <Typography variant="h5" sx={{ fontWeight: 800, fontFamily: 'Space Grotesk' }}>
-            Investment Portfolio
-          </Typography>
-          <Typography variant="caption" sx={{ color: theme.palette.text.secondary }}>
-            Track wealth, stocks, SIPs & assets
-          </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <IconButton
+            onClick={() => {
+              haptics.impactLight();
+              navigate(-1);
+            }}
+            sx={{
+              backgroundColor: theme.palette.background.paper,
+              color: theme.palette.text.primary,
+              width: 42,
+              height: 42,
+              borderRadius: '14px',
+              border: theme.palette.mode === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.08)',
+            }}
+          >
+            <ChevronLeft size={22} />
+          </IconButton>
+
+          <Box>
+            <Typography variant="h5" sx={{ fontWeight: 800, fontFamily: 'Space Grotesk' }}>
+              Investment Portfolio
+            </Typography>
+            <Typography variant="caption" sx={{ color: theme.palette.text.secondary }}>
+              Track wealth, stocks, SIPs & assets
+            </Typography>
+          </Box>
         </Box>
 
         <Button

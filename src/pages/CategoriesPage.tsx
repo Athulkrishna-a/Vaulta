@@ -78,11 +78,9 @@ const DraggableCategoryCard: React.FC<DraggableCategoryCardProps> = ({ cat, onEd
           <IconButton size="small" onClick={() => onEdit(cat)} sx={{ p: 0.4 }}>
             <Edit2 size={14} />
           </IconButton>
-          {!cat.isDefault && (
-            <IconButton size="small" color="error" onClick={() => onDelete(cat)} sx={{ p: 0.4 }}>
-              <Trash2 size={14} />
-            </IconButton>
-          )}
+          <IconButton size="small" color="error" onClick={() => onDelete(cat)} sx={{ p: 0.4 }}>
+            <Trash2 size={14} />
+          </IconButton>
         </Box>
       </GlassCard>
     </Reorder.Item>
@@ -178,13 +176,14 @@ export const CategoriesPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ p: 2, pb: 12 }}>
+    <Box sx={{ p: 2, pt: 'calc(env(safe-area-inset-top, 0px) + 24px)', pb: 12 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2, gap: 1.5 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, minWidth: 0, flex: 1 }}>
           <IconButton
             onClick={() => {
               haptics.impactLight();
-              navigate(-1);
+              if (window.history.length > 1) navigate(-1);
+              else navigate('/', { replace: true });
             }}
             sx={{
               backgroundColor: theme.palette.background.paper,
@@ -206,15 +205,23 @@ export const CategoriesPage: React.FC = () => {
             </Typography>
           </Box>
         </Box>
-        <Button
-          variant="contained"
-          size="small"
-          startIcon={<Plus size={16} />}
+
+        {/* Top Right Add Icon Only */}
+        <IconButton
           onClick={handleOpenAdd}
-          sx={{ borderRadius: '14px', fontFamily: 'Space Grotesk', fontWeight: 700, whiteSpace: 'nowrap', flexShrink: 0 }}
+          sx={{
+            width: 42,
+            height: 42,
+            borderRadius: '14px',
+            backgroundColor: '#00F5A0',
+            color: '#031C0C',
+            boxShadow: '0 4px 14px rgba(0, 245, 160, 0.4)',
+            '&:hover': { backgroundColor: '#00D68B' },
+          }}
+          title="Add Custom Category"
         >
-          Add Custom
-        </Button>
+          <Plus size={22} strokeWidth={2.5} />
+        </IconButton>
       </Box>
 
       {/* Tabs */}
@@ -258,15 +265,27 @@ export const CategoriesPage: React.FC = () => {
         ))}
       </Reorder.Group>
 
-      {/* Add / Edit Category Dialog */}
+      {/* Add / Edit Category Dialog with High-Contrast Vivid Dark Glass & Grid Icon Picker */}
       <Dialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         fullWidth
         maxWidth="xs"
-        slotProps={{ paper: { sx: { borderRadius: '28px', p: 1 } } }}
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: '28px',
+              p: 1.5,
+              background: 'radial-gradient(ellipse 90% 60% at 50% 0%, rgba(0, 245, 160, 0.22) 0%, rgba(15, 20, 32, 0.98) 100%)',
+              color: '#F4F6FC',
+              border: '1.5px solid rgba(0, 245, 160, 0.4)',
+              boxShadow: '0 20px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 245, 160, 0.25)',
+              backdropFilter: 'blur(30px)',
+            },
+          },
+        }}
       >
-        <DialogTitle sx={{ fontWeight: 800 }}>
+        <DialogTitle sx={{ fontWeight: 800, fontFamily: 'Space Grotesk', fontSize: '1.25rem', color: '#00F5A0' }}>
           {editingCategory ? 'Edit Category' : 'Add Custom Category'}
         </DialogTitle>
         <DialogContent>
@@ -275,32 +294,80 @@ export const CategoriesPage: React.FC = () => {
             label="Category Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            sx={{ my: 2 }}
+            sx={{
+              my: 2,
+              '& label': { color: '#8A95AD', fontWeight: 600 },
+              '& input': { color: '#F4F6FC', fontWeight: 700, fontFamily: 'Space Grotesk' },
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '16px',
+                backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                '&.Mui-focused': { border: '1.5px solid #00F5A0' },
+              },
+            }}
           />
 
-          <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
-            Icon
+          <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 1.2, color: '#C6FF2E', letterSpacing: '0.04em' }}>
+            SELECT ICON
           </Typography>
-          <Box sx={{ display: 'flex', gap: 1, overflowX: 'auto', pb: 1, mb: 2 }}>
-            {AVAILABLE_ICONS.map((iconName) => (
-              <Chip
-                key={iconName}
-                icon={<CategoryIcon name={iconName} size={16} color={icon === iconName ? '#FFF' : color} />}
-                onClick={() => setIcon(iconName)}
-                color={icon === iconName ? 'primary' : 'default'}
-                sx={{ borderRadius: '12px' }}
-              />
-            ))}
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(5, 1fr)',
+              gap: 1.2,
+              maxHeight: 180,
+              overflowY: 'auto',
+              p: 1,
+              mb: 2.5,
+              borderRadius: '18px',
+              backgroundColor: 'rgba(0, 0, 0, 0.3)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+            }}
+          >
+            {AVAILABLE_ICONS.map((iconName) => {
+              const isSelected = icon === iconName;
+              return (
+                <Box
+                  key={iconName}
+                  onClick={() => {
+                    haptics.impactLight();
+                    setIcon(iconName);
+                  }}
+                  sx={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: '14px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: isSelected ? `${color}35` : 'rgba(255, 255, 255, 0.05)',
+                    border: isSelected ? `2px solid ${color}` : '1px solid rgba(255, 255, 255, 0.1)',
+                    boxShadow: isSelected ? `0 0 14px ${color}80` : 'none',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                    '&:hover': {
+                      transform: 'scale(1.08)',
+                      backgroundColor: `${color}25`,
+                    },
+                  }}
+                >
+                  <CategoryIcon name={iconName} size={20} color={isSelected ? color : '#C4D0E3'} />
+                </Box>
+              );
+            })}
           </Box>
 
-          <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
-            Color
+          <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 1.2, color: '#C6FF2E', letterSpacing: '0.04em' }}>
+            SELECT COLOR
           </Typography>
-          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+          <Box sx={{ display: 'flex', gap: 1.2, flexWrap: 'wrap', p: 1, borderRadius: '18px', backgroundColor: 'rgba(0,0,0,0.3)' }}>
             {CATEGORY_COLORS.map((c) => (
               <Box
                 key={c}
-                onClick={() => setColor(c)}
+                onClick={() => {
+                  haptics.impactLight();
+                  setColor(c);
+                }}
                 sx={{
                   width: 32,
                   height: 32,
@@ -308,16 +375,33 @@ export const CategoriesPage: React.FC = () => {
                   backgroundColor: c,
                   cursor: 'pointer',
                   border: color === c ? '3px solid #FFF' : 'none',
-                  boxShadow: color === c ? '0 0 0 2px #00677F' : 'none',
+                  boxShadow: color === c ? `0 0 14px ${c}` : 'none',
+                  transition: 'transform 0.15s ease',
+                  '&:hover': { transform: 'scale(1.15)' },
                 }}
               />
             ))}
           </Box>
         </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleSave}>
-            Save
+        <DialogActions sx={{ px: 3, pb: 2.5, gap: 1 }}>
+          <Button onClick={() => setDialogOpen(false)} sx={{ color: '#8A95AD', fontWeight: 700, fontFamily: 'Space Grotesk' }}>
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleSave}
+            sx={{
+              borderRadius: '16px',
+              backgroundColor: '#00F5A0',
+              color: '#031C0C',
+              fontWeight: 800,
+              fontFamily: 'Space Grotesk',
+              px: 3.5,
+              py: 1,
+              '&:hover': { backgroundColor: '#00D68B' },
+            }}
+          >
+            Save Category
           </Button>
         </DialogActions>
       </Dialog>
@@ -328,16 +412,28 @@ export const CategoriesPage: React.FC = () => {
         onClose={() => setDeleteDialogOpen(false)}
         fullWidth
         maxWidth="xs"
-        slotProps={{ paper: { sx: { borderRadius: '28px', p: 1 } } }}
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: '28px',
+              p: 1.5,
+              background: 'radial-gradient(ellipse 90% 60% at 50% 0%, rgba(255, 82, 82, 0.2) 0%, rgba(15, 20, 32, 0.98) 100%)',
+              color: '#F4F6FC',
+              border: '1.5px solid rgba(255, 82, 82, 0.4)',
+              boxShadow: '0 20px 50px rgba(0, 0, 0, 0.9)',
+              backdropFilter: 'blur(30px)',
+            },
+          },
+        }}
       >
-        <DialogTitle sx={{ fontWeight: 800 }}>Delete Category?</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 800, color: '#FF5252', fontFamily: 'Space Grotesk' }}>Delete Category?</DialogTitle>
         <DialogContent>
           {assocCount > 0 ? (
-            <Box>
-              <Typography variant="body2" color="error" sx={{ mb: 2, fontWeight: 600 }}>
+            <Box sx={{ mt: 1 }}>
+              <Typography variant="body2" sx={{ mb: 2, fontWeight: 700, color: '#FF7675' }}>
                 This category is currently associated with {assocCount} transactions.
               </Typography>
-              <Typography variant="body2" sx={{ mb: 1 }}>
+              <Typography variant="body2" sx={{ mb: 1.5, color: '#C4D0E3' }}>
                 Please select a category to re-assign those transactions to before deleting:
               </Typography>
               <TextField
@@ -347,6 +443,10 @@ export const CategoriesPage: React.FC = () => {
                 value={reassignId}
                 onChange={(e) => setReassignId(e.target.value)}
                 size="small"
+                sx={{
+                  '& label': { color: '#8A95AD' },
+                  '& .MuiOutlinedInput-root': { borderRadius: '14px', backgroundColor: 'rgba(255,255,255,0.06)', color: '#F4F6FC' },
+                }}
               >
                 {categories
                   .filter((c) => c.id !== deleteId)
@@ -358,14 +458,21 @@ export const CategoriesPage: React.FC = () => {
               </TextField>
             </Box>
           ) : (
-            <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
+            <Typography variant="body2" sx={{ color: '#C4D0E3', mt: 1 }}>
               Are you sure you want to delete this category?
             </Typography>
           )}
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-          <Button variant="contained" color="error" onClick={handleConfirmDelete}>
+          <Button onClick={() => setDeleteDialogOpen(false)} sx={{ color: '#8A95AD', fontWeight: 700, fontFamily: 'Space Grotesk' }}>
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={handleConfirmDelete}
+            sx={{ borderRadius: '14px', fontWeight: 800, fontFamily: 'Space Grotesk', px: 2.5 }}
+          >
             Delete Category
           </Button>
         </DialogActions>

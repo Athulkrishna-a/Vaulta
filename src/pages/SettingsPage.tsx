@@ -104,7 +104,7 @@ export const SettingsPage: React.FC = () => {
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      sx={{ p: 2, pb: 14 }}
+      sx={{ p: 2, pt: 'calc(env(safe-area-inset-top, 0px) + 24px)', pb: 14 }}
     >
       {/* Top Left Glass Back Button + Page Title Header */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2.5 }}>
@@ -212,41 +212,11 @@ export const SettingsPage: React.FC = () => {
           label="Currency Format"
           value={settings.currency}
           onChange={(e) => handleCurrencyChange(e.target.value as CurrencyCode)}
-          sx={{ mb: 2 }}
         >
           <MenuItem value="INR">INR (₹ Indian Rupee)</MenuItem>
           <MenuItem value="USD">USD ($ US Dollar)</MenuItem>
           <MenuItem value="EUR">EUR (€ Euro)</MenuItem>
           <MenuItem value="GBP">GBP (£ British Pound)</MenuItem>
-        </TextField>
-
-        <TextField
-          select
-          fullWidth
-          size="small"
-          label="Date Display Format"
-          value={settings.dateFormat || 'DD/MM/YYYY'}
-          onChange={(e) => updateSettings({ dateFormat: e.target.value as DateFormatOption })}
-          sx={{ mb: 2 }}
-        >
-          <MenuItem value="DD/MM/YYYY">DD / MM / YYYY (e.g. 28/09/2026)</MenuItem>
-          <MenuItem value="MM/DD/YYYY">MM / DD / YYYY (e.g. 09/28/2026)</MenuItem>
-          <MenuItem value="YYYY-MM-DD">YYYY - MM - DD (e.g. 2026-09-28)</MenuItem>
-        </TextField>
-
-        <TextField
-          select
-          fullWidth
-          size="small"
-          label="Default Payment Method"
-          value={settings.defaultPaymentMethod || 'UPI'}
-          onChange={(e) => updateSettings({ defaultPaymentMethod: e.target.value as PaymentMethod })}
-        >
-          <MenuItem value="UPI">UPI</MenuItem>
-          <MenuItem value="Cash">Cash</MenuItem>
-          <MenuItem value="Credit Card">Credit Card</MenuItem>
-          <MenuItem value="Debit Card">Debit Card</MenuItem>
-          <MenuItem value="Bank Transfer">Bank Transfer</MenuItem>
         </TextField>
       </Paper>
 
@@ -439,15 +409,30 @@ export const SettingsPage: React.FC = () => {
               primary="PIN Lock Protection"
               secondary={settings.securityLock ? 'App lock enabled' : 'App lock disabled'}
             />
-            {settings.securityLock ? (
-              <Button size="small" color="error" onClick={handleRemovePin}>
-                Disable
-              </Button>
-            ) : (
-              <Button size="small" variant="contained" onClick={() => setPinDialogOpen(true)}>
-                Enable PIN
-              </Button>
-            )}
+            <IconButton
+              onClick={() => {
+                if (settings.securityLock) {
+                  handleRemovePin();
+                } else {
+                  setPinDialogOpen(true);
+                }
+              }}
+              sx={{
+                width: 44,
+                height: 44,
+                borderRadius: '14px',
+                backgroundColor: settings.securityLock ? 'rgba(0, 245, 160, 0.15)' : 'rgba(255, 255, 255, 0.06)',
+                color: settings.securityLock ? '#00F5A0' : theme.palette.text.secondary,
+                border: settings.securityLock ? '1px solid rgba(0, 245, 160, 0.4)' : '1px solid rgba(255, 255, 255, 0.1)',
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  backgroundColor: settings.securityLock ? 'rgba(0, 245, 160, 0.25)' : 'rgba(255, 255, 255, 0.12)',
+                },
+              }}
+              title={settings.securityLock ? 'Tap to disable lock' : 'Tap to enable lock'}
+            >
+              <Lock size={20} />
+            </IconButton>
           </ListItem>
         </List>
       </Paper>
@@ -487,9 +472,21 @@ export const SettingsPage: React.FC = () => {
         onClose={() => setBudgetDialogOpen(false)}
         fullWidth
         maxWidth="xs"
-        slotProps={{ paper: { sx: { borderRadius: '28px', p: 1 } } }}
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: '28px',
+              p: 1.5,
+              background: 'radial-gradient(ellipse 90% 60% at 50% 0%, rgba(0, 245, 160, 0.15) 0%, rgba(15, 17, 24, 0.98) 100%)',
+              color: '#F4F6FC',
+              border: '1.5px solid rgba(0, 245, 160, 0.3)',
+              boxShadow: '0 20px 50px rgba(0, 0, 0, 0.85)',
+              backdropFilter: 'blur(25px)',
+            },
+          },
+        }}
       >
-        <DialogTitle sx={{ fontWeight: 800 }}>Set Monthly Budget</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 800, fontFamily: 'Space Grotesk', color: '#00F5A0' }}>Set Monthly Budget</DialogTitle>
         <DialogContent>
           <TextField
             fullWidth
@@ -497,12 +494,30 @@ export const SettingsPage: React.FC = () => {
             label="Monthly Limit (₹)"
             value={budgetValue}
             onChange={(e) => setBudgetValue(e.target.value)}
-            sx={{ mt: 2 }}
+            sx={{
+              mt: 2,
+              '& input': { color: '#F4F6FC', fontWeight: 700, fontFamily: 'Space Grotesk' },
+              '& label': { color: '#8A95AD' },
+              '& .MuiOutlinedInput-root': { borderRadius: '16px', backgroundColor: 'rgba(255,255,255,0.05)' },
+            }}
           />
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setBudgetDialogOpen(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleSaveBudget}>
+          <Button onClick={() => setBudgetDialogOpen(false)} sx={{ color: '#8A95AD', fontWeight: 700, fontFamily: 'Space Grotesk' }}>
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleSaveBudget}
+            sx={{
+              borderRadius: '16px',
+              backgroundColor: '#00F5A0',
+              color: '#0B0E17',
+              fontWeight: 800,
+              fontFamily: 'Space Grotesk',
+              px: 3,
+            }}
+          >
             Save Budget
           </Button>
         </DialogActions>
@@ -514,9 +529,21 @@ export const SettingsPage: React.FC = () => {
         onClose={() => setPinDialogOpen(false)}
         fullWidth
         maxWidth="xs"
-        slotProps={{ paper: { sx: { borderRadius: '28px', p: 1 } } }}
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: '28px',
+              p: 1.5,
+              background: 'radial-gradient(ellipse 90% 60% at 50% 0%, rgba(124, 77, 255, 0.15) 0%, rgba(15, 17, 24, 0.98) 100%)',
+              color: '#F4F6FC',
+              border: '1.5px solid rgba(124, 77, 255, 0.3)',
+              boxShadow: '0 20px 50px rgba(0, 0, 0, 0.85)',
+              backdropFilter: 'blur(25px)',
+            },
+          },
+        }}
       >
-        <DialogTitle sx={{ fontWeight: 800 }}>Set 4-Digit Security PIN</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 800, fontFamily: 'Space Grotesk', color: '#7C4DFF' }}>Set 4-Digit Security PIN</DialogTitle>
         <DialogContent>
           <TextField
             fullWidth
@@ -527,12 +554,31 @@ export const SettingsPage: React.FC = () => {
               if (e.target.value.length <= 4) setNewPin(e.target.value);
             }}
             slotProps={{ htmlInput: { maxLength: 4, inputMode: 'numeric' } }}
-            sx={{ mt: 2 }}
+            sx={{
+              mt: 2,
+              '& input': { color: '#F4F6FC', fontWeight: 700, fontFamily: 'Space Grotesk', letterSpacing: '0.4em', textAlign: 'center' },
+              '& label': { color: '#8A95AD' },
+              '& .MuiOutlinedInput-root': { borderRadius: '16px', backgroundColor: 'rgba(255,255,255,0.05)' },
+            }}
           />
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setPinDialogOpen(false)}>Cancel</Button>
-          <Button variant="contained" disabled={newPin.length !== 4} onClick={handleSavePin}>
+          <Button onClick={() => setPinDialogOpen(false)} sx={{ color: '#8A95AD', fontWeight: 700, fontFamily: 'Space Grotesk' }}>
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            disabled={newPin.length !== 4}
+            onClick={handleSavePin}
+            sx={{
+              borderRadius: '16px',
+              backgroundColor: '#7C4DFF',
+              color: '#FFFFFF',
+              fontWeight: 800,
+              fontFamily: 'Space Grotesk',
+              px: 3,
+            }}
+          >
             Enable Lock
           </Button>
         </DialogActions>

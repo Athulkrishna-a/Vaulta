@@ -11,6 +11,7 @@ import {
   Alert,
   CircularProgress,
   useTheme,
+  TextField,
 } from '@mui/material';
 import { Download, Upload, FileText, CheckCircle, AlertTriangle } from 'lucide-react';
 import {
@@ -105,11 +106,19 @@ export const BackupRestoreDialog: React.FC<BackupRestoreDialogProps> = ({ open, 
       maxWidth="xs"
       slotProps={{
         paper: {
-          sx: { borderRadius: '28px', p: 1 },
+          sx: {
+            borderRadius: '28px',
+            p: 1.5,
+            background: 'radial-gradient(ellipse 90% 60% at 50% 0%, rgba(0, 245, 160, 0.14) 0%, rgba(15, 17, 24, 0.98) 100%)',
+            color: '#F4F6FC',
+            border: '1.5px solid rgba(0, 245, 160, 0.3)',
+            boxShadow: '0 20px 50px rgba(0, 0, 0, 0.85), 0 0 24px rgba(0, 245, 160, 0.18)',
+            backdropFilter: 'blur(25px)',
+          },
         },
       }}
     >
-      <DialogTitle sx={{ fontWeight: 800 }}>Backup & Restore</DialogTitle>
+      <DialogTitle sx={{ fontWeight: 800, fontFamily: 'Space Grotesk', fontSize: '1.25rem', color: '#00F5A0' }}>Backup & Restore</DialogTitle>
 
       <DialogContent>
         {successMessage && (
@@ -154,11 +163,50 @@ export const BackupRestoreDialog: React.FC<BackupRestoreDialogProps> = ({ open, 
           color="secondary"
           fullWidth
           startIcon={<Upload size={18} />}
-          sx={{ borderRadius: '16px', py: 1.2, mb: 2 }}
+          sx={{ borderRadius: '16px', py: 1.2, mb: 1.5 }}
         >
           Select JSON Backup File
-          <input type="file" accept=".json" hidden onChange={handleFileSelect} />
+          <input type="file" accept=".json,application/json,text/plain,*/*" hidden onChange={handleFileSelect} />
         </Button>
+
+        <Typography variant="caption" sx={{ color: theme.palette.text.secondary, textAlign: 'center', display: 'block', mb: 1.5 }}>
+          - OR PASTE RAW JSON BELOW -
+        </Typography>
+
+        <TextField
+          fullWidth
+          multiline
+          rows={3}
+          placeholder="Paste backup JSON string here..."
+          onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+            const val = e.target.value.trim();
+            if (!val) {
+              setValidationResult(null);
+              setParsedPayload(null);
+              return;
+            }
+            try {
+              const json = JSON.parse(val);
+              const result = validateBackupFile(json);
+              setValidationResult(result);
+              if (result.valid) setParsedPayload(json);
+            } catch (err) {
+              setValidationResult({
+                valid: false,
+                errors: ['Invalid JSON format pasted.'],
+              });
+            }
+          }}
+          sx={{
+            mb: 2,
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '16px',
+              fontSize: '0.8rem',
+              fontFamily: 'monospace',
+              backgroundColor: 'rgba(255, 255, 255, 0.03)',
+            },
+          }}
+        />
 
         {validationResult && !validationResult.valid && (
           <Alert severity="error" icon={<AlertTriangle size={20} />} sx={{ borderRadius: '14px', mb: 2 }}>

@@ -5,19 +5,19 @@
     </clipPath>
   </defs>
   <g clip-path="url(#squircle-clip-4)">
-    <!-- Base Charcoal Finish -->
-    <rect width="512" height="512" fill="#111827" />
+    <!-- Base Deep Midnight Forest -->
+    <rect width="512" height="512" fill="#031C0C" />
     
-    <!-- Top Outflow Arc (Coral Red) -->
+    <!-- Top Outflow Arc (Electric Volt Lime) -->
     <path d="M170 236 C170 178 214 136 276 136 C328 136 366 170 374 216" 
-          fill="none" stroke="#F43F5E" stroke-width="26" stroke-linecap="round" />
+          fill="none" stroke="#C6FF2E" stroke-width="26" stroke-linecap="round" />
     <path d="M352 232 L378 214 L396 244" 
-          fill="none" stroke="#F43F5E" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" />
+          fill="none" stroke="#C6FF2E" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" />
           
-    <!-- Bottom Inflow Arc (Clean Crisp White) -->
+    <!-- Bottom Inflow Arc (Neon Mint) -->
     <path d="M342 276 C342 334 298 376 236 376 C184 376 146 342 138 296" 
-          fill="none" stroke="#FFFFFF" stroke-width="26" stroke-linecap="round" />
+          fill="none" stroke="#00E676" stroke-width="26" stroke-linecap="round" />
     <path d="M160 280 L134 298 L116 268" 
-          fill="none" stroke="#FFFFFF" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" />
+          fill="none" stroke="#00E676" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" />
   </g>
 </svg>

@@ -1,22 +1,22 @@
 export const lightPalette = {
   mode: 'light' as const,
   primary: {
-    main: '#6C5CE7', // Vibrant Purple/Violet primary like Mockups 1 & 2
-    contrastText: '#FFFFFF',
-    container: '#E0DFFF',
-    onContainer: '#21005D',
+    main: '#00E676', // Cyber Emerald Green
+    contrastText: '#0B0E17',
+    container: '#D4F8E8',
+    onContainer: '#0B0E17',
   },
   secondary: {
-    main: '#FF7675', // Vibrant Orange/Coral secondary
+    main: '#7C4DFF', // Vibrant Electric Violet
     contrastText: '#FFFFFF',
-    container: '#FFE0E0',
-    onContainer: '#410002',
+    container: '#EDE7F6',
+    onContainer: '#1A0066',
   },
   tertiary: {
-    main: '#00B894', // Emerald Green accent
-    contrastText: '#FFFFFF',
-    container: '#D4F8F0',
-    onContainer: '#003915',
+    main: '#FFD600', // Cyber Gold
+    contrastText: '#0B0E17',
+    container: '#FFFDE7',
+    onContainer: '#332B00',
   },
   error: {
     main: '#FF5252',
@@ -25,103 +25,103 @@ export const lightPalette = {
     onContainer: '#410002',
   },
   income: {
-    main: '#00B894',
-    contrastText: '#FFFFFF',
-    container: '#E6F9F4',
-    onContainer: '#004B3A',
+    main: '#00E676',
+    contrastText: '#0B0E17',
+    container: 'rgba(0, 230, 118, 0.18)',
+    onContainer: '#0B0E17',
   },
   expense: {
-    main: '#FF7675',
+    main: '#FF5252',
     contrastText: '#FFFFFF',
-    container: '#FFF0F0',
-    onContainer: '#601410',
+    container: 'rgba(255, 82, 82, 0.18)',
+    onContainer: '#FF5252',
   },
   transfer: {
-    main: '#6C5CE7',
+    main: '#7C4DFF',
     contrastText: '#FFFFFF',
-    container: '#F0EEFF',
-    onContainer: '#21005D',
+    container: 'rgba(124, 77, 255, 0.18)',
+    onContainer: '#7C4DFF',
   },
   background: {
-    default: '#F5F7FA', // Soft light gray tint like mockup 1 & 3
-    paper: '#FFFFFF',
-    glass: 'rgba(255, 255, 255, 0.85)',
-    glassBorder: 'rgba(230, 235, 240, 0.8)',
-    surfaceContainer: '#F0F3F7',
-    surfaceContainerHigh: '#E4E8EE',
-    surfaceContainerHighest: '#D8DEE6',
+    default: '#0B0E17',
+    paper: 'rgba(18, 24, 38, 0.82)',
+    glass: 'rgba(15, 20, 32, 0.78)',
+    glassBorder: 'rgba(0, 230, 118, 0.16)',
+    surfaceContainer: '#121724',
+    surfaceContainerHigh: '#182030',
+    surfaceContainerHighest: '#202A3E',
   },
   text: {
-    primary: '#1A1D26',
-    secondary: '#6E7485',
-    disabled: '#A0A6B5',
+    primary: '#F4F6FC',
+    secondary: '#8A95AD',
+    disabled: '#535F7A',
   },
-  divider: 'rgba(220, 226, 235, 0.8)',
+  divider: 'rgba(0, 230, 118, 0.14)',
 };
 
 export const darkPalette = {
   mode: 'dark' as const,
   primary: {
-    main: '#8C7CFF',
-    contrastText: '#0E0D1B',
-    container: '#332488',
-    onContainer: '#E0DFFF',
+    main: '#00F5A0', // Cyber Neon Emerald
+    contrastText: '#0B0E17',
+    container: '#0A3B25',
+    onContainer: '#00F5A0',
   },
   secondary: {
-    main: '#FF8A89',
-    contrastText: '#2B0505',
-    container: '#701A19',
-    onContainer: '#FFE0E0',
+    main: '#7C4DFF', // Electric Violet
+    contrastText: '#FFFFFF',
+    container: '#2C1B5E',
+    onContainer: '#D1C4E9',
   },
   tertiary: {
-    main: '#00D1A7',
-    contrastText: '#002B20',
-    container: '#005944',
-    onContainer: '#D4F8F0',
+    main: '#FFD600', // Cyber Gold
+    contrastText: '#0B0E17',
+    container: '#423800',
+    onContainer: '#FFD600',
   },
   error: {
-    main: '#FF6B6B',
-    contrastText: '#410002',
-    container: '#93000A',
+    main: '#FF5252',
+    contrastText: '#FFFFFF',
+    container: '#6B1B1A',
     onContainer: '#FFDAD6',
   },
   income: {
-    main: '#00D1A7',
-    contrastText: '#002B20',
-    container: '#004737',
-    onContainer: '#D4F8F0',
+    main: '#00F5A0',
+    contrastText: '#0B0E17',
+    container: 'rgba(0, 245, 160, 0.18)',
+    onContainer: '#00F5A0',
   },
   expense: {
-    main: '#FF8A89',
-    contrastText: '#2B0505',
-    container: '#6B1B1A',
-    onContainer: '#FFE0E0',
+    main: '#FF5252',
+    contrastText: '#FFFFFF',
+    container: 'rgba(255, 82, 82, 0.2)',
+    onContainer: '#FF8A89',
   },
   transfer: {
-    main: '#8C7CFF',
-    contrastText: '#0E0D1B',
-    container: '#332488',
-    onContainer: '#E0DFFF',
+    main: '#7C4DFF',
+    contrastText: '#FFFFFF',
+    container: 'rgba(124, 77, 255, 0.2)',
+    onContainer: '#B388FF',
   },
   background: {
-    default: '#12141C',
-    paper: '#1B1E2B',
-    glass: 'rgba(27, 30, 43, 0.85)',
-    glassBorder: 'rgba(255, 255, 255, 0.08)',
-    surfaceContainer: '#232738',
-    surfaceContainerHigh: '#2B3045',
-    surfaceContainerHighest: '#353C56',
+    default: '#0B0E17', // Midnight Deep Obsidian
+    paper: 'rgba(18, 24, 38, 0.85)',
+    glass: 'rgba(14, 19, 31, 0.8)',
+    glassBorder: 'rgba(0, 245, 160, 0.15)',
+    surfaceContainer: '#121724',
+    surfaceContainerHigh: '#182030',
+    surfaceContainerHighest: '#202A3E',
   },
   text: {
-    primary: '#F0F2F7',
-    secondary: '#9CA3AF',
-    disabled: '#6B7280',
+    primary: '#F4F6FC', // Clean Crisp Tint White
+    secondary: '#8A95AD', // Soft Steel Silver
+    disabled: '#535F7A',
   },
-  divider: 'rgba(255, 255, 255, 0.1)',
+  divider: 'rgba(0, 245, 160, 0.14)',
 };
 
 export const CATEGORY_COLORS = [
-  '#FF7675', '#6C5CE7', '#00B894', '#FDCB6E',
-  '#E84393', '#00CEC9', '#0984E3', '#6C5CE7',
-  '#FD79A8', '#55EFC4', '#FAB1A0', '#A29BFE'
+  '#00F5A0', '#FF5252', '#7C4DFF', '#FFD600',
+  '#00E5FF', '#FF4081', '#76FF03', '#FF9100',
+  '#E040FB', '#1DE9B6', '#FF6E40', '#A7FF3D'
 ];

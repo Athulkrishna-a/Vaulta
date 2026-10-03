@@ -148,10 +148,11 @@ export const CustomDatePickerModal: React.FC<CustomDatePickerModalProps> = ({
         paper: {
           sx: {
             borderRadius: '28px',
-            backgroundColor: '#0F1118',
+            background: 'radial-gradient(ellipse 90% 60% at 50% 0%, rgba(124, 77, 255, 0.18) 0%, rgba(15, 17, 24, 0.98) 100%)',
             color: '#FFFFFF',
             p: 1.5,
-            border: '1px solid rgba(255, 255, 255, 0.12)',
+            border: '1.5px solid rgba(124, 77, 255, 0.35)',
+            boxShadow: '0 20px 50px rgba(0,0,0,0.8), 0 0 24px rgba(124, 77, 255, 0.25)',
             backdropFilter: 'blur(25px)',
           },
         },
@@ -159,13 +160,25 @@ export const CustomDatePickerModal: React.FC<CustomDatePickerModalProps> = ({
     >
       <DialogTitle sx={{ fontWeight: 800, fontFamily: 'Space Grotesk', display: 'flex', alignItems: 'center', justifyContent: 'space-between', pb: 1 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <CalendarIcon size={20} color="#8C7CFF" />
-          <Typography variant="h6" sx={{ fontWeight: 800, fontFamily: 'Space Grotesk', fontSize: '1.1rem' }}>
+          <CalendarIcon size={20} color="#7C4DFF" />
+          <Typography variant="h6" sx={{ fontWeight: 800, fontFamily: 'Space Grotesk', fontSize: '1.1rem', color: '#FFFFFF' }}>
             Custom Date Picker
           </Typography>
         </Box>
-        <IconButton size="small" onClick={onClose} sx={{ color: '#8A92A6' }}>
-          <X size={18} />
+        <IconButton
+          size="small"
+          onClick={onClose}
+          sx={{
+            color: '#F4F6FC',
+            backgroundColor: 'rgba(255, 255, 255, 0.12)',
+            width: 36,
+            height: 36,
+            borderRadius: '50%',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.22)' },
+          }}
+        >
+          <X size={20} />
         </IconButton>
       </DialogTitle>
 
@@ -291,7 +304,7 @@ export const CustomDatePickerModal: React.FC<CustomDatePickerModalProps> = ({
                   sx={{
                     height: 38,
                     borderRadius: isStart || isEnd ? '50%' : isInRange ? '8px' : '50%',
-                    backgroundColor: isStart || isEnd ? '#6C5CE7' : isInRange ? 'rgba(108, 92, 231, 0.25)' : 'transparent',
+                    backgroundColor: isStart || isEnd ? '#7C4DFF' : isInRange ? 'rgba(124, 77, 255, 0.25)' : 'transparent',
                     color: isStart || isEnd ? '#FFFFFF' : isInRange ? '#8C7CFF' : '#D0D5E0',
                     display: 'flex',
                     alignItems: 'center',
@@ -301,9 +314,9 @@ export const CustomDatePickerModal: React.FC<CustomDatePickerModalProps> = ({
                     fontFamily: 'Space Grotesk',
                     cursor: 'pointer',
                     transition: 'all 0.15s ease',
-                    border: isSameDay(dateObj, new Date()) && !isStart && !isEnd ? '1px solid #6C5CE7' : 'none',
+                    border: isSameDay(dateObj, new Date()) && !isStart && !isEnd ? '1px solid #7C4DFF' : 'none',
                     '&:hover': {
-                      backgroundColor: isStart || isEnd ? '#6C5CE7' : 'rgba(255, 255, 255, 0.1)',
+                      backgroundColor: isStart || isEnd ? '#7C4DFF' : 'rgba(255, 255, 255, 0.1)',
                     },
                   }}
                 >
@@ -326,7 +339,7 @@ export const CustomDatePickerModal: React.FC<CustomDatePickerModalProps> = ({
         </Button>
 
         <Box sx={{ display: 'flex', gap: 1 }}>
-          <Button onClick={onClose} sx={{ color: '#8A92A6', textTransform: 'none' }}>
+          <Button onClick={onClose} sx={{ color: '#8A92A6', textTransform: 'none', fontWeight: 700, fontFamily: 'Space Grotesk' }}>
             Cancel
           </Button>
           <Button
@@ -335,15 +348,16 @@ export const CustomDatePickerModal: React.FC<CustomDatePickerModalProps> = ({
             startIcon={<Check size={16} />}
             sx={{
               borderRadius: '16px',
-              backgroundColor: '#6C5CE7',
+              backgroundColor: '#7C4DFF',
               color: '#FFFFFF',
               fontWeight: 800,
               fontFamily: 'Space Grotesk',
-              px: 2.5,
-              '&:hover': { backgroundColor: '#5B51D8' },
+              px: 3,
+              boxShadow: '0 4px 16px rgba(124, 77, 255, 0.4)',
+              '&:hover': { backgroundColor: '#6C3DFF' },
             }}
           >
-            Apply Date Filter
+            Apply
           </Button>
         </Box>
       </DialogActions>

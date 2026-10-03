@@ -41,32 +41,55 @@ export const TransactionFilterBar: React.FC<TransactionFilterBarProps> = ({
 
   return (
     <Box sx={{ mb: 2 }}>
-      {/* Search Input */}
-      <TextField
-        fullWidth
-        size="small"
-        placeholder="Search transactions, notes, amounts..."
-        value={filters.searchQuery}
-        onChange={(e) => onChange({ ...filters, searchQuery: e.target.value })}
-        slotProps={{
-          input: {
-            startAdornment: (
-              <InputAdornment position="start">
-                <Search size={18} color={theme.palette.text.secondary} />
-              </InputAdornment>
-            ),
-            endAdornment: filters.searchQuery ? (
-              <InputAdornment position="end">
-                <IconButton size="small" onClick={() => onChange({ ...filters, searchQuery: '' })}>
-                  <X size={16} />
-                </IconButton>
-              </InputAdornment>
-            ) : null,
-            sx: { borderRadius: '16px', backgroundColor: theme.palette.background.paper },
-          },
-        }}
-        sx={{ mb: 1.5 }}
-      />
+      {/* Search Input & Custom Date Filter in ONE Single Row */}
+      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mb: 1.5 }}>
+        <TextField
+          fullWidth
+          size="small"
+          placeholder="Search transactions, notes, amounts..."
+          value={filters.searchQuery}
+          onChange={(e) => onChange({ ...filters, searchQuery: e.target.value })}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search size={18} color={theme.palette.text.secondary} />
+                </InputAdornment>
+              ),
+              endAdornment: filters.searchQuery ? (
+                <InputAdornment position="end">
+                  <IconButton size="small" onClick={() => onChange({ ...filters, searchQuery: '' })}>
+                    <X size={16} />
+                  </IconButton>
+                </InputAdornment>
+              ) : null,
+              sx: { borderRadius: '16px', backgroundColor: theme.palette.background.paper, height: 42 },
+            },
+          }}
+        />
+
+        <Button
+          variant={hasDateFilter ? 'contained' : 'outlined'}
+          startIcon={<CalendarIcon size={18} />}
+          endIcon={hasDateFilter ? <X size={16} onClick={(e) => { e.stopPropagation(); onChange({ ...filters, startDate: undefined, endDate: undefined }); }} /> : undefined}
+          onClick={() => setDatePickerOpen(true)}
+          sx={{
+            borderRadius: '16px',
+            height: 42,
+            px: 1.8,
+            flexShrink: 0,
+            whiteSpace: 'nowrap',
+            fontWeight: 700,
+            fontFamily: 'Space Grotesk',
+            fontSize: '0.8rem',
+            backgroundColor: hasDateFilter ? theme.palette.primary.main : 'rgba(255,255,255,0.05)',
+            color: hasDateFilter ? '#FFFFFF' : theme.palette.text.primary,
+            border: hasDateFilter ? 'none' : '1px solid rgba(255,255,255,0.1)',
+          }}
+        >
+          {dateFilterLabel}
+        </Button>
+      </Box>
 
       {/* Type & Category Chips */}
       <Box sx={{ display: 'flex', gap: 1, overflowX: 'auto', pb: 1, '::-webkit-scrollbar': { display: 'none' } }}>
@@ -122,31 +145,6 @@ export const TransactionFilterBar: React.FC<TransactionFilterBarProps> = ({
           <MenuItem value="amount_desc">Highest Amount</MenuItem>
           <MenuItem value="amount_asc">Lowest Amount</MenuItem>
         </TextField>
-      </Box>
-
-      {/* Custom Date Range Picker Trigger Row */}
-      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mt: 1 }}>
-        <Button
-          fullWidth
-          variant={hasDateFilter ? 'contained' : 'outlined'}
-          startIcon={<CalendarIcon size={18} />}
-          endIcon={hasDateFilter ? <X size={16} onClick={(e) => { e.stopPropagation(); onChange({ ...filters, startDate: undefined, endDate: undefined }); }} /> : undefined}
-          onClick={() => setDatePickerOpen(true)}
-          sx={{
-            borderRadius: '16px',
-            py: 1,
-            fontWeight: 700,
-            fontFamily: 'Space Grotesk',
-            fontSize: '0.82rem',
-            backgroundColor: hasDateFilter ? theme.palette.primary.main : 'rgba(255,255,255,0.04)',
-            color: hasDateFilter ? '#FFFFFF' : theme.palette.text.primary,
-            border: hasDateFilter ? 'none' : '1px solid rgba(255,255,255,0.1)',
-            justifyContent: 'space-between',
-            px: 2,
-          }}
-        >
-          {dateFilterLabel}
-        </Button>
       </Box>
 
       {/* Custom Date Picker Modal */}

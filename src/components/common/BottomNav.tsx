@@ -15,9 +15,8 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onOpenFastAdd }) => {
 
   const currentPath = location.pathname;
 
-  // Hide bottom navbar on Settings page and settings sub-pages
+  // Hide bottom navbar ONLY on sub-management pages
   const isHideNav = [
-    '/settings',
     '/categories',
     '/payment-methods',
     '/investment-types',
@@ -50,24 +49,24 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onOpenFastAdd }) => {
       }}
     >
       <Paper
-        elevation={10}
+        elevation={12}
         sx={{
           width: '100%',
           maxWidth: 420,
           borderRadius: '36px',
-          backgroundColor: 'rgba(18, 20, 28, 0.72)',
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
-          color: '#FFFFFF',
-          border: '1px solid rgba(255, 255, 255, 0.15)',
-          boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+          background: 'linear-gradient(135deg, rgba(11, 14, 23, 0.94) 0%, rgba(6, 26, 16, 0.95) 100%)',
+          backdropFilter: 'blur(28px)',
+          WebkitBackdropFilter: 'blur(28px)',
+          color: '#F0FDF4',
+          border: '1.5px solid rgba(0, 245, 160, 0.3)',
+          boxShadow: '0 16px 45px rgba(0, 0, 0, 0.75), 0 0 25px rgba(0, 245, 160, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15)',
           pointerEvents: 'auto',
           px: 1,
           py: 0.5,
           position: 'relative',
         }}
       >
-        {/* Prominent Floating Action Button (+) centered with glowing red ring */}
+        {/* Prominent Floating Action Button (+) centered with glowing cyber emerald gradient */}
         <Box
           sx={{
             position: 'absolute',
@@ -87,12 +86,13 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onOpenFastAdd }) => {
               width: 56,
               height: 56,
               borderRadius: '50%',
-              backgroundColor: '#FF7675', // Coral Red matching mockup image
-              color: '#FFFFFF',
-              boxShadow: '0 0 24px rgba(255, 118, 117, 0.6), 0 8px 20px rgba(0, 0, 0, 0.3)',
-              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+              background: 'linear-gradient(135deg, #00F5A0 0%, #C6FF2E 100%)',
+              color: '#031C0C',
+              boxShadow: '0 0 28px rgba(0, 245, 160, 0.65), 0 8px 24px rgba(0, 0, 0, 0.5)',
+              transition: 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease',
               '&:hover': {
-                backgroundColor: '#FF6B6B',
+                transform: 'translateX(-50%) scale(1.06)',
+                boxShadow: '0 0 34px rgba(0, 245, 160, 0.85)',
               },
               '&:active': {
                 transform: 'scale(0.92)',
@@ -118,12 +118,13 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onOpenFastAdd }) => {
             '& .MuiBottomNavigationAction-root': {
               minWidth: 0,
               flex: 1,
-              color: '#8A92A6',
+              color: '#70809A',
               padding: '6px 0',
-              transition: 'color 0.2s ease, transform 0.2s ease',
+              transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
               '&.Mui-selected': {
-                color: '#00D1A7', // Glowing mint active color
-                transform: 'scale(1.15)',
+                color: '#00F5A0',
+                transform: 'scale(1.2)',
+                filter: 'drop-shadow(0 0 8px rgba(0, 245, 160, 0.6))',
               },
             },
           }}

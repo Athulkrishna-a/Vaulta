@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button, Grid, Paper, useTheme } from '@mui/material';
-import { Delete, RotateCcw } from 'lucide-react';
+import { Box, Typography, Button, Grid, IconButton, useTheme } from '@mui/material';
+import { Delete, RotateCcw, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useHaptics } from '../hooks/useHaptics';
 
 export const CalculatorPage: React.FC = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const haptics = useHaptics();
 
   const [display, setDisplay] = useState<string>('0');
@@ -73,38 +75,66 @@ export const CalculatorPage: React.FC = () => {
     <Box
       sx={{
         p: 2.5,
+        pt: 'calc(env(safe-area-inset-top, 0px) + 24px)',
         pb: 14,
         minHeight: '100vh',
-        backgroundColor: '#11141F',
-        color: '#FFFFFF',
+        backgroundColor: '#0B0E17',
+        color: '#F4F6FC',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        boxSizing: 'border-box',
       }}
     >
-      <Box sx={{ mb: 2 }}>
-        <Typography variant="h5" sx={{ fontWeight: 800, fontFamily: 'Space Grotesk' }}>
-          Standard Calculator
-        </Typography>
-        <Typography variant="caption" sx={{ color: '#8A92A6', fontWeight: 500 }}>
-          Quick financial & expense math
-        </Typography>
+      {/* Top Header with Back Button on the LEFT */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.8, mb: 2 }}>
+        <IconButton
+          onClick={() => navigate(-1)}
+          aria-label="Go Back"
+          sx={{
+            backgroundColor: 'rgba(198, 255, 46, 0.12)',
+            color: '#C6FF2E',
+            borderRadius: '16px',
+            width: 44,
+            height: 44,
+            border: '1px solid rgba(198, 255, 46, 0.2)',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+            '&:hover': { backgroundColor: 'rgba(198, 255, 46, 0.22)' },
+            '&:active': { transform: 'scale(0.95)' },
+          }}
+        >
+          <ArrowLeft size={22} />
+        </IconButton>
+
+        <Box>
+          <Typography variant="h5" sx={{ fontWeight: 800, fontFamily: 'Space Grotesk', color: '#F0FDF4' }}>
+            Standard Calculator
+          </Typography>
+          <Typography variant="caption" sx={{ color: '#86A789', fontWeight: 500 }}>
+            Quick financial & expense math
+          </Typography>
+        </Box>
       </Box>
 
-      {/* Retro Olive Green LCD Display Screen matching Mockup Image */}
-      <Box
-        sx={{
-          borderRadius: '28px',
-          p: 3,
-          backgroundColor: '#8FA667',
-          color: '#1A290E',
-          boxShadow: 'inset 0 4px 14px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.35)',
-          border: '4px solid #1E2333',
-          mb: 3,
-          position: 'relative',
-          minHeight: 130,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-        }}
-      >
+      {/* Main Calculator Body pushed towards the bottom */}
+      <Box sx={{ mt: 'auto' }}>
+        {/* Retro Olive Green LCD Display Screen matching Mockup Image */}
+        <Box
+          sx={{
+            borderRadius: '28px',
+            p: 3,
+            backgroundColor: '#8FA667',
+            color: '#1A290E',
+            boxShadow: 'inset 0 4px 14px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.35)',
+            border: '4px solid #1E2333',
+            mb: 3,
+            position: 'relative',
+            minHeight: 130,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
+        >
         <Typography
           variant="caption"
           sx={{
@@ -249,7 +279,8 @@ export const CalculatorPage: React.FC = () => {
         </Grid>
       </Grid>
     </Box>
-  );
+  </Box>
+);
 };
 
 const numKeyStyle = {

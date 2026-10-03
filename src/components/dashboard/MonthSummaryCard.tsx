@@ -606,32 +606,38 @@ export const MonthSummaryCard: React.FC = () => {
         </motion.div>
       </Box>
 
-      {/* 3-Card Summary Row: Total Balance, Expense, Investment */}
-      <Grid container spacing={1.5}>
+      {/* 3-Card Summary Row: Total Balance, Expense, Investment (Equal Width & Height) */}
+      <Grid container spacing={1.2} sx={{ alignItems: 'stretch' }}>
         {/* Overall Total Balance Card */}
-        <Grid size={{ xs: 4 }}>
+        <Grid size={{ xs: 4 }} sx={{ display: 'flex' }}>
           <Box
             sx={{
-              p: 1.5,
+              width: '100%',
+              height: '100%',
+              minHeight: 105,
               borderRadius: '20px',
-              backgroundColor: theme.palette.mode === 'dark' ? '#1A1C28' : '#2D3436',
-              color: '#FFFFFF',
-              boxShadow: '0 6px 16px rgba(0,0,0,0.2)',
-              minHeight: 95,
+              p: 1.5,
+              boxSizing: 'border-box',
+              backgroundColor: 'rgba(18, 24, 38, 0.85)',
+              backdropFilter: 'blur(16px)',
+              WebkitBackdropFilter: 'blur(16px)',
+              border: '1px solid rgba(0, 245, 160, 0.18)',
+              color: '#F4F6FC',
+              boxShadow: '0 6px 16px rgba(0, 0, 0, 0.3)',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
             }}
           >
-            <Typography variant="caption" noWrap sx={{ fontWeight: 700, color: 'rgba(255,255,255,0.7)', fontSize: '0.65rem' }}>
+            <Typography variant="caption" noWrap sx={{ fontWeight: 700, color: '#8A95AD', fontSize: '0.65rem' }}>
               Overall Balance
             </Typography>
             <Box sx={{ mt: 0.5 }}>
               <CurrencyText
                 amount={totalBalance}
-                sx={{ fontSize: '1.05rem', fontWeight: 800, color: '#FFFFFF', display: 'block' }}
+                sx={{ fontSize: '1.05rem', fontWeight: 800, color: '#F4F6FC', display: 'block' }}
               />
-              <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.62rem' }}>
+              <Typography variant="caption" noWrap sx={{ color: '#8A95AD', fontSize: '0.62rem', display: 'block' }}>
                 All Accounts
               </Typography>
             </Box>
@@ -639,29 +645,35 @@ export const MonthSummaryCard: React.FC = () => {
         </Grid>
 
         {/* Monthly Expense Card */}
-        <Grid size={{ xs: 4 }}>
+        <Grid size={{ xs: 4 }} sx={{ display: 'flex' }}>
           <Box
             sx={{
-              p: 1.5,
+              width: '100%',
+              height: '100%',
+              minHeight: 105,
               borderRadius: '20px',
-              backgroundColor: theme.palette.mode === 'dark' ? '#701A19' : '#FF7675',
-              color: '#FFFFFF',
-              boxShadow: '0 6px 16px rgba(255, 118, 117, 0.25)',
-              minHeight: 95,
+              p: 1.5,
+              boxSizing: 'border-box',
+              backgroundColor: 'rgba(255, 82, 82, 0.15)',
+              backdropFilter: 'blur(16px)',
+              WebkitBackdropFilter: 'blur(16px)',
+              border: '1px solid rgba(255, 82, 82, 0.3)',
+              color: '#FF5252',
+              boxShadow: '0 6px 16px rgba(255, 82, 82, 0.2)',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
             }}
           >
-            <Typography variant="caption" noWrap sx={{ fontWeight: 700, color: 'rgba(255,255,255,0.85)', fontSize: '0.65rem' }}>
+            <Typography variant="caption" noWrap sx={{ fontWeight: 700, color: '#FF8A89', fontSize: '0.65rem' }}>
               Monthly Expense
             </Typography>
             <Box sx={{ mt: 0.5 }}>
               <CurrencyText
                 amount={monthlySummary.totalExpense}
-                sx={{ fontSize: '1.05rem', fontWeight: 800, color: '#FFFFFF', display: 'block' }}
+                sx={{ fontSize: '1.05rem', fontWeight: 800, color: '#FF5252', display: 'block' }}
               />
-              <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.62rem' }}>
+              <Typography variant="caption" noWrap sx={{ color: '#FF8A89', fontSize: '0.62rem', display: 'block' }}>
                 Spent ({monthLabel})
               </Typography>
             </Box>
@@ -669,16 +681,22 @@ export const MonthSummaryCard: React.FC = () => {
         </Grid>
 
         {/* Total Investment Card */}
-        <Grid size={{ xs: 4 }}>
+        <Grid size={{ xs: 4 }} sx={{ display: 'flex' }}>
           <Box
             onClick={() => navigate('/investments')}
             sx={{
-              p: 1.5,
+              width: '100%',
+              height: '100%',
+              minHeight: 105,
               borderRadius: '20px',
-              backgroundColor: theme.palette.mode === 'dark' ? '#4A3B05' : '#F1C40F',
-              color: theme.palette.mode === 'dark' ? '#FFE066' : '#2C3E50',
-              boxShadow: '0 6px 16px rgba(241, 196, 15, 0.25)',
-              minHeight: 95,
+              p: 1.5,
+              boxSizing: 'border-box',
+              backgroundColor: 'rgba(255, 214, 0, 0.15)',
+              backdropFilter: 'blur(16px)',
+              WebkitBackdropFilter: 'blur(16px)',
+              border: '1px solid rgba(255, 214, 0, 0.3)',
+              color: '#FFD600',
+              boxShadow: '0 6px 16px rgba(255, 214, 0, 0.2)',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
@@ -686,15 +704,15 @@ export const MonthSummaryCard: React.FC = () => {
               '&:active': { transform: 'scale(0.97)' },
             }}
           >
-            <Typography variant="caption" noWrap sx={{ fontWeight: 700, opacity: 0.9, fontSize: '0.65rem' }}>
+            <Typography variant="caption" noWrap sx={{ fontWeight: 700, color: '#FFE566', fontSize: '0.65rem' }}>
               Total Investment
             </Typography>
             <Box sx={{ mt: 0.5 }}>
               <CurrencyText
                 amount={totalInvestments}
-                sx={{ fontSize: '1.05rem', fontWeight: 800, color: 'inherit', display: 'block' }}
+                sx={{ fontSize: '1.05rem', fontWeight: 800, color: '#FFD600', display: 'block' }}
               />
-              <Typography variant="caption" sx={{ opacity: 0.75, fontSize: '0.62rem' }}>
+              <Typography variant="caption" noWrap sx={{ color: '#FFE566', fontSize: '0.62rem', display: 'block' }}>
                 Portfolio Value ↗
               </Typography>
             </Box>

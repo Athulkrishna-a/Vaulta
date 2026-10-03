@@ -27,14 +27,37 @@ export async function createFullBackup(): Promise<BackupPayload> {
   };
 }
 
-export function downloadJsonFile(data: object, filename: string) {
-  const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(data, null, 2))}`;
+export async function downloadJsonFile(data: object, filename: string) {
+  const jsonString = JSON.stringify(data, null, 2);
+  const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8;' });
+
+  if (typeof navigator !== 'undefined' && navigator.share && navigator.canShare) {
+    try {
+      const file = new File([blob], filename, { type: 'application/json' });
+      if (navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: 'ExpenseTrack Backup',
+          text: 'Backup file for ExpenseTrack',
+        });
+        return;
+      }
+    } catch (e) {
+      // Fallback to Blob ObjectURL anchor click
+    }
+  }
+
+  const url = URL.createObjectURL(blob);
   const downloadAnchor = document.createElement('a');
-  downloadAnchor.setAttribute('href', jsonString);
+  downloadAnchor.setAttribute('href', url);
   downloadAnchor.setAttribute('download', filename);
+  downloadAnchor.style.display = 'none';
   document.body.appendChild(downloadAnchor);
   downloadAnchor.click();
-  downloadAnchor.remove();
+  setTimeout(() => {
+    document.body.removeChild(downloadAnchor);
+    URL.revokeObjectURL(url);
+  }, 2000);
 }
 
 export interface ValidationResult {

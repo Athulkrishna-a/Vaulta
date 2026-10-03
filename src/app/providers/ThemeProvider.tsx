@@ -13,9 +13,13 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const AppThemeProvider: React.FC<{ children: React.ReactNode; initialMode?: ThemeMode }> = ({
   children,
-  initialMode = 'system',
+  initialMode,
 }) => {
-  const [mode, setMode] = useState<ThemeMode>(initialMode);
+  const [mode, setModeState] = useState<ThemeMode>(() => {
+    const saved = localStorage.getItem('app_theme_mode');
+    return (saved as ThemeMode) || initialMode || 'system';
+  });
+
   const [systemDark, setSystemDark] = useState<boolean>(() =>
     window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)').matches : false
   );
@@ -24,13 +28,17 @@ export const AppThemeProvider: React.FC<{ children: React.ReactNode; initialMode
     if (!window.matchMedia) return;
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handler = (e: MediaQueryListEvent) => setSystemDark(e.matches);
-    
-    // Modern matchMedia listener
+
     if (mediaQuery.addEventListener) {
       mediaQuery.addEventListener('change', handler);
       return () => mediaQuery.removeEventListener('change', handler);
     }
   }, []);
+
+  const setMode = (newMode: ThemeMode) => {
+    setModeState(newMode);
+    localStorage.setItem('app_theme_mode', newMode);
+  };
 
   const effectiveMode = useMemo<'light' | 'dark'>(() => {
     if (mode === 'system') return systemDark ? 'dark' : 'light';

@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import { ChevronLeft, ChevronRight, Search, Calendar as CalendarIcon, SlidersHorizontal, X } from 'lucide-react';
 import { format } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
 import { ExpenseDonutChart } from '../components/dashboard/ExpenseDonutChart';
 import { MonthlyComparisonChart } from '../components/statistics/MonthlyComparisonChart';
 import { IncomeVsExpenseChart } from '../components/statistics/IncomeVsExpenseChart';
@@ -21,9 +22,12 @@ import { GlassCard } from '../components/common/GlassCard';
 import { CategoryIcon } from '../components/common/CategoryIcon';
 import { CurrencyText } from '../components/common/CurrencyText';
 import { CustomDatePickerModal } from '../components/common/CustomDatePickerModal';
+import { useHaptics } from '../hooks/useHaptics';
 
 export const StatisticsPage: React.FC = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const haptics = useHaptics();
   const { activeMonth, setActiveMonth, monthlySummary, transactions } = useAppData();
 
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -31,6 +35,16 @@ export const StatisticsPage: React.FC = () => {
   const [customStartDate, setCustomStartDate] = useState<string>('');
   const [customEndDate, setCustomEndDate] = useState<string>('');
   const [datePickerOpen, setDatePickerOpen] = useState<boolean>(false);
+
+  // Reset filters to original defaults when leaving the page
+  React.useEffect(() => {
+    return () => {
+      setSearchQuery('');
+      setDatePreset('this_month');
+      setCustomStartDate('');
+      setCustomEndDate('');
+    };
+  }, []);
 
   const handlePrevMonth = () => {
     const [year, month] = activeMonth.split('-').map(Number);
@@ -65,12 +79,31 @@ export const StatisticsPage: React.FC = () => {
   }, [monthlySummary, searchQuery]);
 
   return (
-    <Box sx={{ p: 2, pb: 14 }}>
-      {/* Top Title & Month Navigator */}
+    <Box sx={{ p: 2, pt: 'calc(env(safe-area-inset-top, 0px) + 24px)', pb: 14 }}>
+      {/* Top Header with Back Arrow & Month Navigator */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-        <Typography variant="h5" sx={{ fontWeight: 800, fontFamily: 'Space Grotesk' }}>
-          Financial Analytics
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <IconButton
+            onClick={() => {
+              haptics.impactLight();
+              navigate(-1);
+            }}
+            sx={{
+              backgroundColor: theme.palette.background.paper,
+              color: theme.palette.text.primary,
+              width: 42,
+              height: 42,
+              borderRadius: '14px',
+              border: theme.palette.mode === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.08)',
+            }}
+          >
+            <ChevronLeft size={22} />
+          </IconButton>
+
+          <Typography variant="h5" sx={{ fontWeight: 800, fontFamily: 'Space Grotesk' }}>
+            Financial Analytics
+          </Typography>
+        </Box>
 
         <Box
           sx={{
@@ -125,30 +158,47 @@ export const StatisticsPage: React.FC = () => {
         />
       </Box>
 
-      {/* Custom Date Range Picker Trigger Row */}
+      {/* Analytics Search Filter & Date Picker in ONE Single Row */}
       <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mb: 2 }}>
-        <Button
+        <TextField
           fullWidth
+          size="small"
+          placeholder="Filter analytics by category..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search size={18} color={theme.palette.text.secondary} />
+                </InputAdornment>
+              ),
+              sx: { borderRadius: '16px', backgroundColor: theme.palette.background.paper, height: 42 },
+            },
+          }}
+        />
+
+        <Button
           variant={customStartDate || customEndDate ? 'contained' : 'outlined'}
           startIcon={<CalendarIcon size={18} />}
-          endIcon={customStartDate || customEndDate ? <X size={16} onClick={(e) => { e.stopPropagation(); setCustomStartDate(''); setCustomEndDate(''); }} /> : undefined}
           onClick={() => setDatePickerOpen(true)}
           sx={{
             borderRadius: '16px',
-            py: 1,
+            height: 42,
+            px: 1.8,
+            flexShrink: 0,
+            whiteSpace: 'nowrap',
             fontWeight: 700,
             fontFamily: 'Space Grotesk',
-            fontSize: '0.82rem',
-            backgroundColor: customStartDate || customEndDate ? theme.palette.primary.main : 'rgba(255,255,255,0.04)',
+            fontSize: '0.8rem',
+            backgroundColor: customStartDate || customEndDate ? theme.palette.primary.main : 'rgba(255,255,255,0.05)',
             color: customStartDate || customEndDate ? '#FFFFFF' : theme.palette.text.primary,
             border: customStartDate || customEndDate ? 'none' : '1px solid rgba(255,255,255,0.1)',
-            justifyContent: 'space-between',
-            px: 2,
           }}
         >
           {customStartDate || customEndDate
-            ? `${customStartDate ? format(new Date(customStartDate), 'dd MMM') : ''} - ${customEndDate ? format(new Date(customEndDate), 'dd MMM yyyy') : 'Now'}`
-            : 'Choose Custom Date Range'}
+            ? `${customStartDate ? format(new Date(customStartDate), 'dd MMM') : ''} - ${customEndDate ? format(new Date(customEndDate), 'dd MMM') : ''}`
+            : 'Date Filter'}
         </Button>
       </Box>
 
@@ -161,25 +211,6 @@ export const StatisticsPage: React.FC = () => {
         onApply={(s, e) => {
           setCustomStartDate(s || '');
           setCustomEndDate(e || '');
-        }}
-      />
-
-      {/* Analytics Search Filter Bar */}
-      <TextField
-        fullWidth
-        size="small"
-        placeholder="Filter analytics by category name..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        slotProps={{
-          input: {
-            startAdornment: (
-              <InputAdornment position="start">
-                <Search size={18} color={theme.palette.text.secondary} />
-              </InputAdornment>
-            ),
-            sx: { borderRadius: '16px', backgroundColor: theme.palette.background.paper, mb: 2 },
-          },
         }}
       />
 
