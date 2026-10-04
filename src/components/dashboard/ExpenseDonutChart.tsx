@@ -60,6 +60,8 @@ export const ExpenseDonutChart: React.FC = () => {
               outerRadius={92}
               paddingAngle={5}
               stroke="none"
+              activeShape={false}
+              style={{ outline: 'none' }}
               isAnimationActive={true}
               animationDuration={800}
               animationEasing="ease-out"

@@ -14,18 +14,22 @@ import {
   DialogContent,
   useTheme,
 } from '@mui/material';
-import { ArrowLeft, ChevronDown, ChevronUp, Delete, User, Users, Briefcase, RefreshCw, Check, Plus, Calculator, X, FileText } from 'lucide-react';
+import { ArrowLeft, ChevronDown, ChevronUp, Delete, User, Users, Briefcase, RefreshCw, Check, Plus, Calculator, X, FileText, Calendar as CalendarIcon, Wallet } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { App as CapacitorApp } from '@capacitor/app';
 import { Transaction, TransactionType, PaymentMethod, TransferType, InvestmentCategory } from '../../types';
 import { useAppData } from '../../app/providers/AppDataProvider';
 import { CategoryIcon } from '../common/CategoryIcon';
 import { useHaptics } from '../../hooks/useHaptics';
 import { formatCurrency } from '../../utils/currency';
+import { CustomDatePickerModal } from '../common/CustomDatePickerModal';
+import { format } from 'date-fns';
 
 interface TransactionFormSheetProps {
   open: boolean;
   onClose: () => void;
   initialData?: Transaction | null;
+  defaultType?: TransactionType;
 }
 
 const TRANSFER_TYPES: { type: TransferType; label: string; icon: any }[] = [
@@ -39,6 +43,7 @@ export const TransactionFormSheet: React.FC<TransactionFormSheetProps> = ({
   open,
   onClose,
   initialData,
+  defaultType,
 }) => {
   const theme = useTheme();
   const haptics = useHaptics();
@@ -58,13 +63,14 @@ export const TransactionFormSheet: React.FC<TransactionFormSheetProps> = ({
   const [categoryId, setCategoryId] = useState<string>('');
   const [accountId, setAccountId] = useState<string>('');
   const [destinationAccountId, setDestinationAccountId] = useState<string>('');
-  const [recipientName, setRecipientName] = useState<string>('Selma Knight');
+  const [recipientName, setRecipientName] = useState<string>('');
   const [transferType, setTransferType] = useState<TransferType>('Friend');
   const [investmentCategory, setInvestmentCategory] = useState<string>('Mutual Funds');
   const [paymentMethod, setPaymentMethod] = useState<string>('UPI');
   const [date, setDate] = useState<string>(new Date().toISOString());
   const [note, setNote] = useState<string>('');
   const [showNoteInput, setShowNoteInput] = useState<boolean>(false);
+  const [datePickerOpen, setDatePickerOpen] = useState<boolean>(false);
 
   // Calculator Popup State
   const [calcOpen, setCalcOpen] = useState<boolean>(false);
@@ -79,7 +85,7 @@ export const TransactionFormSheet: React.FC<TransactionFormSheetProps> = ({
         setCategoryId(initialData.categoryId || '');
         setAccountId(initialData.accountId || (accounts[0]?.id ?? ''));
         setDestinationAccountId(initialData.destinationAccountId || '');
-        setRecipientName(initialData.recipientName || 'Selma Knight');
+        setRecipientName(initialData.recipientName || '');
         setTransferType(initialData.transferType || 'Friend');
         setInvestmentCategory((initialData.investmentCategory as InvestmentCategory) || 'Mutual Funds');
         setPaymentMethod(initialData.paymentMethod || 'UPI');
@@ -87,13 +93,14 @@ export const TransactionFormSheet: React.FC<TransactionFormSheetProps> = ({
         setNote(initialData.note || '');
         setShowNoteInput(Boolean(initialData.note));
       } else {
-        setType('expense');
+        const targetType = defaultType || 'expense';
+        setType(targetType);
         setAmountStr('0');
-        const defaultCat = categories.find((c) => c.type === 'expense' || c.type === 'both');
+        const defaultCat = categories.find((c) => c.type === targetType || c.type === 'both');
         setCategoryId(defaultCat ? defaultCat.id : (categories[0]?.id ?? ''));
         setAccountId(accounts[0]?.id || '');
         setDestinationAccountId(accounts[1]?.id || '');
-        setRecipientName('Selma Knight');
+        setRecipientName('');
         setTransferType('Friend');
         setInvestmentCategory('Mutual Funds');
         setPaymentMethod('UPI');
@@ -102,7 +109,34 @@ export const TransactionFormSheet: React.FC<TransactionFormSheetProps> = ({
         setShowNoteInput(false);
       }
     }
-  }, [open, initialData, categories, accounts]);
+  }, [open, initialData, defaultType, categories, accounts]);
+
+  // Handle mobile back gesture & Android hardware back button to close sheet
+  useEffect(() => {
+    if (!open) return;
+
+    window.history.pushState({ formSheetOpen: true }, '');
+
+    const handlePopState = () => {
+      onClose();
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    let backListener: any = null;
+    CapacitorApp.addListener('backButton', () => {
+      onClose();
+    }).then((h) => {
+      backListener = h;
+    });
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      if (backListener) {
+        backListener.remove();
+      }
+    };
+  }, [open, onClose]);
 
   const filteredCategories = categories.filter(
     (c) => c.type === type || c.type === 'both' || type === 'transfer'
@@ -198,6 +232,11 @@ export const TransactionFormSheet: React.FC<TransactionFormSheetProps> = ({
       return;
     }
 
+    if (type === 'transfer' && !recipientName.trim()) {
+      haptics.notifyError();
+      return;
+    }
+
     const payload = {
       type,
       amount: numAmount,
@@ -275,6 +314,7 @@ export const TransactionFormSheet: React.FC<TransactionFormSheetProps> = ({
       anchor="bottom"
       open={open}
       onClose={onClose}
+      transitionDuration={{ enter: 220, exit: 180 }}
       slotProps={{
         paper: {
           sx: {
@@ -289,40 +329,11 @@ export const TransactionFormSheet: React.FC<TransactionFormSheetProps> = ({
             WebkitBackdropFilter: 'blur(30px)',
             borderTop: `1.5px solid ${themeColors.main}`,
             boxShadow: `0 -12px 40px ${themeColors.main}30`,
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           },
         },
       }}
     >
-      <Box
-        component={motion.div}
-        drag="y"
-        dragConstraints={{ top: 0, bottom: 0 }}
-        dragElastic={{ top: 0.05, bottom: 0.5 }}
-        onDragEnd={(_, info) => {
-          if (info.offset.y > 75 || info.velocity.y > 400) {
-            onClose();
-          }
-        }}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.25, ease: 'easeOut' }}
-      >
-        {/* Top Drag Handle Bar */}
-        <Box
-          sx={{
-            width: 42,
-            height: 5,
-            backgroundColor: 'rgba(255, 255, 255, 0.25)',
-            borderRadius: '4px',
-            mx: 'auto',
-            mb: 1.8,
-            cursor: 'pointer',
-            transition: 'background-color 0.2s ease',
-            '&:active': { backgroundColor: themeColors.main },
-          }}
-          onClick={onClose}
-        />
+      <Box sx={{ width: '100%' }}>
 
         {/* Header: Back Arrow & 4-Tab Segmented Selector */}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
@@ -460,11 +471,13 @@ export const TransactionFormSheet: React.FC<TransactionFormSheetProps> = ({
                     setPaymentMethod(pm);
                   }}
                   sx={{
-                    borderRadius: '14px',
-                    px: 1.8,
-                    py: 0.6,
+                    borderRadius: '12px',
+                    px: 1.5,
+                    py: 0.3,
+                    height: 30,
+                    minHeight: 30,
                     fontWeight: 700,
-                    fontSize: '0.78rem',
+                    fontSize: '0.74rem',
                     fontFamily: 'Space Grotesk',
                     backgroundColor: isSelected ? themeColors.light : 'rgba(255, 255, 255, 0.05)',
                     color: isSelected ? themeColors.main : '#8A95AD',
@@ -514,19 +527,19 @@ export const TransactionFormSheet: React.FC<TransactionFormSheetProps> = ({
                       setCategoryId(cat.id);
                     }}
                     sx={{
-                      px: 1.5,
-                      py: 0.8,
-                      borderRadius: '16px',
+                      px: 1.2,
+                      py: 0.4,
+                      borderRadius: '14px',
                       backgroundColor: isSelected ? `${cat.color}25` : 'rgba(18, 24, 38, 0.75)',
                       color: isSelected ? cat.color : '#F4F6FC',
-                      border: isSelected ? `2px solid ${cat.color}` : '1px solid rgba(255, 255, 255, 0.08)',
+                      border: isSelected ? `1.5px solid ${cat.color}` : '1px solid rgba(255, 255, 255, 0.08)',
                       boxShadow: isSelected ? `0 0 14px ${cat.color}45` : 'none',
                       display: 'flex',
                       flexDirection: 'row',
                       alignItems: 'center',
                       justifyContent: 'flex-start',
-                      gap: 1.2,
-                      height: 48,
+                      gap: 1,
+                      height: 38,
                       scrollSnapAlign: 'start',
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -535,11 +548,11 @@ export const TransactionFormSheet: React.FC<TransactionFormSheetProps> = ({
                   >
                     <CategoryIcon
                       name={cat.icon}
-                      size={18}
+                      size={14}
                       color={isSelected ? '#FFFFFF' : cat.color}
                       backgroundColor={isSelected ? cat.color : `${cat.color}22`}
                     />
-                    <Typography variant="caption" noWrap sx={{ fontWeight: 700, fontFamily: 'Space Grotesk', fontSize: '0.8rem', flex: 1, minWidth: 0 }}>
+                    <Typography variant="caption" noWrap sx={{ fontWeight: 700, fontFamily: 'Space Grotesk', fontSize: '0.78rem', flex: 1, minWidth: 0 }}>
                       {cat.name}
                     </Typography>
                   </Box>
@@ -580,19 +593,19 @@ export const TransactionFormSheet: React.FC<TransactionFormSheetProps> = ({
                       setInvestmentCategory(invCat);
                     }}
                     sx={{
-                      px: 1.5,
-                      py: 0.8,
-                      borderRadius: '16px',
+                      px: 1.2,
+                      py: 0.4,
+                      borderRadius: '14px',
                       backgroundColor: isSelected ? 'rgba(255, 214, 0, 0.2)' : 'rgba(18, 24, 38, 0.75)',
                       color: isSelected ? '#FFD600' : '#F4F6FC',
-                      border: isSelected ? '2px solid #FFD600' : '1px solid rgba(255, 255, 255, 0.08)',
+                      border: isSelected ? '1.5px solid #FFD600' : '1px solid rgba(255, 255, 255, 0.08)',
                       boxShadow: isSelected ? '0 0 14px rgba(255, 214, 0, 0.4)' : 'none',
                       display: 'flex',
                       flexDirection: 'row',
                       alignItems: 'center',
                       justifyContent: 'flex-start',
-                      gap: 1.2,
-                      height: 48,
+                      gap: 1,
+                      height: 38,
                       scrollSnapAlign: 'start',
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -601,9 +614,9 @@ export const TransactionFormSheet: React.FC<TransactionFormSheetProps> = ({
                   >
                     <Box
                       sx={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: '10px',
+                        width: 26,
+                        height: 26,
+                        borderRadius: '8px',
                         backgroundColor: isSelected ? '#FFD600' : 'rgba(255, 214, 0, 0.15)',
                         display: 'flex',
                         alignItems: 'center',
@@ -611,9 +624,9 @@ export const TransactionFormSheet: React.FC<TransactionFormSheetProps> = ({
                         flexShrink: 0,
                       }}
                     >
-                      <Typography variant="body2" sx={{ fontSize: '1rem', lineHeight: 1 }}>📈</Typography>
+                      <Typography variant="body2" sx={{ fontSize: '0.8rem', lineHeight: 1 }}>📈</Typography>
                     </Box>
-                    <Typography variant="caption" noWrap sx={{ fontWeight: 700, fontFamily: 'Space Grotesk', fontSize: '0.8rem', flex: 1, minWidth: 0 }}>
+                    <Typography variant="caption" noWrap sx={{ fontWeight: 700, fontFamily: 'Space Grotesk', fontSize: '0.78rem', flex: 1, minWidth: 0 }}>
                       {invCat}
                     </Typography>
                   </Box>
@@ -674,72 +687,134 @@ export const TransactionFormSheet: React.FC<TransactionFormSheetProps> = ({
             />
           </Box>
         )}
-
-        {/* 6. Collapsible Optional Note / Description Section */}
-        {!showNoteInput ? (
-          <Box sx={{ mb: 1.5, textAlign: 'center' }}>
-            <Button
-              size="small"
-              onClick={() => {
-                haptics.impactLight();
-                setShowNoteInput(true);
-              }}
-              startIcon={<FileText size={14} />}
-              endIcon={<ChevronDown size={14} />}
-              sx={{
-                color: '#8A95AD',
-                backgroundColor: 'rgba(255, 255, 255, 0.04)',
-                borderRadius: '14px',
-                textTransform: 'none',
-                fontWeight: 700,
-                fontFamily: 'Space Grotesk',
-                fontSize: '0.78rem',
-                py: 0.6,
-                px: 2,
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.08)', color: '#F4F6FC' },
-              }}
-            >
-              + Add Note / Description (Optional)
-            </Button>
-          </Box>
-        ) : (
+        {/* 6. Account Selection Strip (Debit Account) */}
+        {accounts.length > 0 && (
           <Box sx={{ mb: 1.5 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.8 }}>
-              <Typography variant="caption" sx={{ color: '#8A95AD', fontWeight: 700, fontFamily: 'Space Grotesk' }}>
-                DESCRIPTION / NOTE
-              </Typography>
-              <IconButton
-                size="small"
-                onClick={() => {
-                  haptics.impactLight();
-                  setShowNoteInput(false);
-                }}
-                sx={{ color: '#8A95AD', p: 0.2 }}
-              >
-                <ChevronUp size={16} />
-              </IconButton>
+            <Typography variant="caption" sx={{ color: '#8A95AD', fontWeight: 700, fontFamily: 'Space Grotesk', mb: 0.8, display: 'block' }}>
+              {type === 'income' ? 'DEPOSIT TO ACCOUNT' : type === 'investment' ? 'INVESTED FROM ACCOUNT' : type === 'transfer' ? 'FROM ACCOUNT (DEBIT)' : 'PAID FROM ACCOUNT'}
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 1, overflowX: 'auto', pb: 0.5, '::-webkit-scrollbar': { display: 'none' } }}>
+              {accounts.map((acc) => {
+                const isSelected = (accountId || accounts[0]?.id) === acc.id;
+                return (
+                  <Chip
+                    key={acc.id}
+                    icon={<Wallet size={14} color={isSelected ? '#031C0C' : '#8A95AD'} />}
+                    label={acc.name}
+                    onClick={() => {
+                      haptics.impactLight();
+                      setAccountId(acc.id);
+                    }}
+                    sx={{
+                      borderRadius: '12px',
+                      backgroundColor: isSelected ? themeColors.main : 'rgba(255, 255, 255, 0.06)',
+                      color: isSelected ? (type === 'expense' ? '#FFF' : '#031C0C') : '#F4F6FC',
+                      fontWeight: 800,
+                      fontFamily: 'Space Grotesk',
+                      border: isSelected ? `1.5px solid ${themeColors.main}` : '1px solid rgba(255, 255, 255, 0.1)',
+                    }}
+                  />
+                );
+              })}
             </Box>
-            <TextField
-              fullWidth
-              size="small"
-              autoFocus
-              placeholder="Add note or description (e.g. Lunch with team)"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              sx={{
-                '& input': { color: '#F4F6FC', fontWeight: 600, fontFamily: 'Space Grotesk' },
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '14px',
-                  backgroundColor: 'rgba(18, 24, 38, 0.75)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  '&:hover': { border: `1px solid ${themeColors.main}50` },
-                  '&.Mui-focused': { border: `1.5px solid ${themeColors.main}` },
-                },
-              }}
-            />
           </Box>
         )}
+
+        {/* 6. Collapsible Optional Note / Description Section & Small Square Calendar Button */}
+        <Box sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={{ flex: 1 }}>
+            {!showNoteInput ? (
+              <Button
+                size="small"
+                fullWidth
+                onClick={() => {
+                  haptics.impactLight();
+                  setShowNoteInput(true);
+                }}
+                startIcon={<FileText size={14} />}
+                endIcon={<ChevronDown size={14} />}
+                sx={{
+                  color: '#8A95AD',
+                  backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                  borderRadius: '14px',
+                  textTransform: 'none',
+                  fontWeight: 700,
+                  fontFamily: 'Space Grotesk',
+                  fontSize: '0.78rem',
+                  py: 0.8,
+                  px: 2,
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.08)', color: '#F4F6FC' },
+                }}
+              >
+                + Add Note / Description (Optional)
+              </Button>
+            ) : (
+              <Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
+                  <Typography variant="caption" sx={{ color: '#8A95AD', fontWeight: 700, fontFamily: 'Space Grotesk' }}>
+                    DESCRIPTION / NOTE
+                  </Typography>
+                  <IconButton
+                    size="small"
+                    onClick={() => {
+                      haptics.impactLight();
+                      setShowNoteInput(false);
+                    }}
+                    sx={{ color: '#8A95AD', p: 0.2 }}
+                  >
+                    <ChevronUp size={16} />
+                  </IconButton>
+                </Box>
+                <TextField
+                  fullWidth
+                  size="small"
+                  autoFocus
+                  placeholder="Add note or description (e.g. Lunch with team)"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  sx={{
+                    '& input': { color: '#F4F6FC', fontWeight: 600, fontFamily: 'Space Grotesk' },
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '14px',
+                      backgroundColor: 'rgba(18, 24, 38, 0.75)',
+                      border: '1px solid rgba(255, 255, 255, 0.08)',
+                      '&:hover': { border: `1px solid ${themeColors.main}50` },
+                      '&.Mui-focused': { border: `1.5px solid ${themeColors.main}` },
+                    },
+                  }}
+                />
+              </Box>
+            )}
+          </Box>
+
+          {/* Small Square Calendar Date Picker Icon Button (Optional Date Selector) */}
+          <IconButton
+            onClick={() => setDatePickerOpen(true)}
+            title="Choose Transaction Date"
+            sx={{
+              width: 42,
+              height: 42,
+              borderRadius: '14px',
+              backgroundColor: 'rgba(255, 255, 255, 0.06)',
+              border: `1.5px solid ${themeColors.main}60`,
+              color: themeColors.main,
+              boxShadow: `0 4px 12px ${themeColors.main}20`,
+              flexShrink: 0,
+              '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.12)' },
+              '&:active': { transform: 'scale(0.92)' },
+            }}
+          >
+            <CalendarIcon size={20} />
+          </IconButton>
+        </Box>
+
+        {/* Selected Date Preview Indicator */}
+        <Box sx={{ mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 0.5 }}>
+          <Typography variant="caption" sx={{ color: '#8A95AD', fontWeight: 600, fontSize: '0.72rem' }}>
+            Date: <strong style={{ color: themeColors.main }}>{format(new Date(date), 'dd MMM yyyy, hh:mm a')}</strong>
+          </Typography>
+        </Box>
 
         {/* 7. Onscreen Dark Keypad Grid */}
         <Box sx={{ mb: 2.5 }}>
@@ -768,6 +843,7 @@ export const TransactionFormSheet: React.FC<TransactionFormSheetProps> = ({
           <Button
             fullWidth
             onClick={handleSubmit}
+            disabled={type === 'transfer' && !recipientName.trim()}
             sx={{
               py: 1.8,
               borderRadius: '24px',
@@ -779,6 +855,10 @@ export const TransactionFormSheet: React.FC<TransactionFormSheetProps> = ({
               boxShadow: `0 10px 28px ${themeColors.main}50`,
               transition: 'transform 0.15s ease, background-color 0.15s ease',
               '&:active': { transform: 'scale(0.98)' },
+              '&.Mui-disabled': {
+                backgroundColor: 'rgba(255, 255, 255, 0.12)',
+                color: 'rgba(255, 255, 255, 0.3)',
+              },
             }}
           >
             {initialData
@@ -817,6 +897,21 @@ export const TransactionFormSheet: React.FC<TransactionFormSheetProps> = ({
           </IconButton>
         </Box>
       </Box>
+
+      {/* Custom Date Picker Modal */}
+      <CustomDatePickerModal
+        open={datePickerOpen}
+        onClose={() => setDatePickerOpen(false)}
+        startDate={date.substring(0, 10)}
+        onApply={(startDate) => {
+          if (startDate) {
+            const pickedDate = new Date(startDate);
+            const now = new Date();
+            pickedDate.setHours(now.getHours(), now.getMinutes(), now.getSeconds());
+            setDate(pickedDate.toISOString());
+          }
+        }}
+      />
 
       {/* Calculator Popup Dialog */}
       <Dialog

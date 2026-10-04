@@ -105,6 +105,18 @@ export interface AppSettings {
   reducedMotion: boolean;
   customPaymentMethods?: string[];
   customInvestmentTypes?: string[];
+  driveBackup?: DriveBackupConfig;
+}
+
+export type BackupInterval = 'never' | 'daily' | 'weekly' | 'monthly' | '90_days' | 'manual';
+
+export interface DriveBackupConfig {
+  connected: boolean;
+  userEmail?: string;
+  autoBackup: boolean;
+  interval: BackupInterval;
+  wifiOnly: boolean;
+  lastBackupTimestamp?: string;
 }
 
 export interface BackupPayload {

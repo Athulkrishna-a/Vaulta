@@ -401,7 +401,7 @@ export const CategoriesPage: React.FC = () => {
               '&:hover': { backgroundColor: '#00D68B' },
             }}
           >
-            Save Category
+            Save
           </Button>
         </DialogActions>
       </Dialog>

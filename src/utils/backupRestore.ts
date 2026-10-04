@@ -1,4 +1,6 @@
 import type { BackupPayload } from '../types';
+import { Share } from '@capacitor/share';
+import { Capacitor } from '@capacitor/core';
 import { transactionRepository } from '../data/repositories/transactionRepository';
 import { categoryRepository } from '../data/repositories/categoryRepository';
 import { accountRepository } from '../data/repositories/accountRepository';
@@ -29,35 +31,38 @@ export async function createFullBackup(): Promise<BackupPayload> {
 
 export async function downloadJsonFile(data: object, filename: string) {
   const jsonString = JSON.stringify(data, null, 2);
-  const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8;' });
 
-  if (typeof navigator !== 'undefined' && navigator.share && navigator.canShare) {
+  // Use Capacitor Share plugin on native Android/iOS
+  if (Capacitor.isNativePlatform()) {
     try {
-      const file = new File([blob], filename, { type: 'application/json' });
-      if (navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          files: [file],
-          title: 'ExpenseTrack Backup',
-          text: 'Backup file for ExpenseTrack',
-        });
-        return;
-      }
+      const dataUrl = `data:application/json;charset=utf-8,${encodeURIComponent(jsonString)}`;
+      await Share.share({
+        title: 'Vaulta Backup',
+        text: 'Vaulta Expense Tracker JSON Data Backup',
+        url: dataUrl,
+        dialogTitle: 'Export JSON Backup',
+      });
+      return;
     } catch (e) {
-      // Fallback to Blob ObjectURL anchor click
+      console.warn('Native share failed, using blob fallback', e);
     }
   }
 
+  // Web / WebView file download fallback
+  const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const downloadAnchor = document.createElement('a');
-  downloadAnchor.setAttribute('href', url);
-  downloadAnchor.setAttribute('download', filename);
+  downloadAnchor.href = url;
+  downloadAnchor.download = filename;
   downloadAnchor.style.display = 'none';
   document.body.appendChild(downloadAnchor);
   downloadAnchor.click();
   setTimeout(() => {
-    document.body.removeChild(downloadAnchor);
+    if (document.body.contains(downloadAnchor)) {
+      document.body.removeChild(downloadAnchor);
+    }
     URL.revokeObjectURL(url);
-  }, 2000);
+  }, 1000);
 }
 
 export interface ValidationResult {

@@ -52,7 +52,7 @@ export const SecurityProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   return (
     <SecurityContext.Provider value={{ isLocked, unlockApp, lockApp, setPin, clearPin }}>
-      {isLocked ? <AppLockScreen onUnlock={unlockApp} /> : children}
+      {isLocked ? <AppLockScreen onUnlock={unlockApp} onResetPin={clearPin} /> : children}
     </SecurityContext.Provider>
   );
 };

@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
+import { Box, Typography } from '@mui/material';
+import { motion } from 'framer-motion';
 import { Transaction, Category, Account, MonthlyBudget, AppSettings, FilterOptions } from '../../types';
 import { initializeDatabaseIfEmpty } from '../../data/db';
 import { transactionRepository } from '../../data/repositories/transactionRepository';
@@ -33,6 +35,7 @@ interface AppDataContextType {
   
   addAccount: (acc: Omit<Account, 'id' | 'createdAt'>) => Promise<Account>;
   updateAccount: (acc: Account) => Promise<Account>;
+  deleteAccount: (id: string) => Promise<void>;
   reorderAccounts: (newOrdered: Account[]) => Promise<void>;
   
   updateBudget: (amount: number, month?: string) => Promise<void>;
@@ -154,6 +157,11 @@ export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return updated;
   };
 
+  const deleteAccount = async (id: string) => {
+    await accountRepository.delete(id);
+    setAccounts((prev) => prev.filter((a) => a.id !== id));
+  };
+
   const reorderAccounts = async (newOrdered: Account[]) => {
     setAccounts(newOrdered);
     const db = await (await import('../../data/db')).getDB();
@@ -231,6 +239,7 @@ export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({ child
       reorderCategories,
       addAccount,
       updateAccount,
+      deleteAccount,
       reorderAccounts,
       updateBudget,
       updateSettings,
@@ -261,6 +270,7 @@ export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({ child
       reorderCategories,
       addAccount,
       updateAccount,
+      deleteAccount,
       reorderAccounts,
       updateBudget,
       updateSettings,
@@ -275,6 +285,73 @@ export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({ child
       monthlySummary,
     ]
   );
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          minHeight: '100vh',
+          width: '100vw',
+          backgroundColor: '#0B0E17',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 3,
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          zIndex: 9999,
+        }}
+      >
+        <Box
+          component={motion.div}
+          animate={{
+            scale: [1, 1.08, 1],
+            boxShadow: [
+              '0 0 20px rgba(0, 245, 160, 0.25)',
+              '0 0 50px rgba(0, 245, 160, 0.65)',
+              '0 0 20px rgba(0, 245, 160, 0.25)',
+            ],
+          }}
+          transition={{
+            duration: 1.6,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+          sx={{
+            width: 92,
+            height: 92,
+            borderRadius: '28px',
+            background: 'linear-gradient(135deg, rgba(3, 28, 12, 0.95) 0%, rgba(6, 40, 20, 0.95) 100%)',
+            border: '2px solid rgba(0, 245, 160, 0.5)',
+            p: 1.5,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <img src="/gemini-svg.svg" alt="Vaulta App Icon" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+        </Box>
+        <Box sx={{ textAlign: 'center' }}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 800,
+              fontFamily: 'Space Grotesk',
+              color: '#F4F6FC',
+              letterSpacing: '0.08em',
+            }}
+          >
+            VAULTA
+          </Typography>
+          <Typography variant="caption" sx={{ color: 'rgba(0, 245, 160, 0.8)', fontWeight: 600, letterSpacing: '0.12em', fontSize: '0.68rem' }}>
+            PERSONAL EXPENSE INTELLIGENCE
+          </Typography>
+        </Box>
+      </Box>
+    );
+  }
 
   return <AppDataContext.Provider value={value}>{children}</AppDataContext.Provider>;
 };

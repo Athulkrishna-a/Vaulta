@@ -1,37 +1,41 @@
-import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { useAppData } from '../app/providers/AppDataProvider';
 
-export function useHaptics() {
-  const triggerImpact = async (style: ImpactStyle = ImpactStyle.Light) => {
-    try {
-      await Haptics.impact({ style });
-    } catch (e) {
-      // Haptics unavailable in browser, fallback silently
+export function useHaptics(isNavbar: boolean = false) {
+  let isHapticsEnabled = true;
+  try {
+    const { settings } = useAppData();
+    if (settings && settings.haptics === false) {
+      isHapticsEnabled = false;
     }
-  };
+  } catch (e) {
+    // Fallback if hook is called outside AppDataProvider context
+  }
 
-  const triggerNotification = async (type: NotificationType = NotificationType.Success) => {
-    try {
-      await Haptics.notification({ type });
-    } catch (e) {
-      // Browser fallback
-    }
-  };
+  // Low-level reduced impact trigger (always Light style or 6ms micro-vibration for web)
+  const triggerImpact = async () => {
+    // Only trigger vibration if enabled and specifically called from the Navbar
+    if (!isNavbar || !isHapticsEnabled) return;
 
-  const triggerVibrate = async () => {
     try {
-      await Haptics.vibrate();
+      await Haptics.impact({ style: ImpactStyle.Light });
     } catch (e) {
-      // Browser fallback
+      // Browser web fallback with ultra-light duration (6ms)
+      if (typeof navigator !== 'undefined' && navigator.vibrate) {
+        try {
+          navigator.vibrate(6);
+        } catch (_) {}
+      }
     }
   };
 
   return {
-    impactLight: () => triggerImpact(ImpactStyle.Light),
-    impactMedium: () => triggerImpact(ImpactStyle.Medium),
-    impactHeavy: () => triggerImpact(ImpactStyle.Heavy),
-    notifySuccess: () => triggerNotification(NotificationType.Success),
-    notifyWarning: () => triggerNotification(NotificationType.Warning),
-    notifyError: () => triggerNotification(NotificationType.Error),
-    vibrate: triggerVibrate,
+    impactLight: triggerImpact,
+    impactMedium: triggerImpact,
+    impactHeavy: triggerImpact,
+    notifySuccess: triggerImpact,
+    notifyWarning: triggerImpact,
+    notifyError: triggerImpact,
+    vibrate: triggerImpact,
   };
 }

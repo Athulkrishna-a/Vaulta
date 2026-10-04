@@ -1,6 +1,6 @@
 import React from 'react';
 import { Paper, BottomNavigation, BottomNavigationAction, Box, Fab, Tooltip } from '@mui/material';
-import { Home, ListOrdered, BarChart2, Settings, Plus, Calculator } from 'lucide-react';
+import { Home, ListOrdered, BarChart2, Wallet, Plus, Settings } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useHaptics } from '../../hooks/useHaptics';
 
@@ -11,7 +11,7 @@ interface BottomNavProps {
 export const BottomNav: React.FC<BottomNavProps> = ({ onOpenFastAdd }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const haptics = useHaptics();
+  const haptics = useHaptics(true);
 
   const currentPath = location.pathname;
 
@@ -20,8 +20,6 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onOpenFastAdd }) => {
     '/categories',
     '/payment-methods',
     '/investment-types',
-    '/accounts',
-    '/calculator',
   ].includes(currentPath);
 
   if (isHideNav) return null;
@@ -150,10 +148,10 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onOpenFastAdd }) => {
             icon={<BarChart2 size={22} strokeWidth={2.2} />}
           />
 
-          {/* Right Tab 2: Settings */}
+          {/* Right Tab 2: Accounts & Wallets */}
           <BottomNavigationAction
-            value="/settings"
-            icon={<Settings size={22} strokeWidth={2.2} />}
+            value="/accounts"
+            icon={<Wallet size={22} strokeWidth={2.2} />}
           />
         </BottomNavigation>
       </Paper>

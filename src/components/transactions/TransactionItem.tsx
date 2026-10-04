@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Box, Typography, IconButton, Menu, MenuItem, useTheme, Dialog, DialogTitle, DialogContent, DialogActions, Button, Chip } from '@mui/material';
-import { MoreVertical, Edit2, Trash2, Eye, X, Calendar, Wallet, CreditCard, Tag, User } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, IconButton, useTheme, Dialog, DialogTitle, DialogContent, DialogActions, Button, Chip } from '@mui/material';
+import { ChevronRight, X } from 'lucide-react';
+import { App as CapacitorApp } from '@capacitor/app';
 import { Transaction } from '../../types';
 import { CategoryIcon } from '../common/CategoryIcon';
 import { CurrencyText } from '../common/CurrencyText';
@@ -20,20 +21,37 @@ export const TransactionItem: React.FC<TransactionItemProps> = ({
 }) => {
   const theme = useTheme();
   const { categories, accounts } = useAppData();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [detailsOpen, setDetailsOpen] = useState<boolean>(false);
+
+  // Handle mobile back gesture for details popup
+  useEffect(() => {
+    if (!detailsOpen) return;
+
+    window.history.pushState({ detailsOpen: true }, '');
+
+    const handlePopState = () => {
+      setDetailsOpen(false);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    let backListener: any = null;
+    CapacitorApp.addListener('backButton', () => {
+      setDetailsOpen(false);
+    }).then((h) => {
+      backListener = h;
+    });
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      if (backListener) {
+        backListener.remove();
+      }
+    };
+  }, [detailsOpen]);
 
   const category = categories.find((c) => c.id === transaction.categoryId);
   const account = accounts.find((a) => a.id === transaction.accountId);
-
-  const handleMenuOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    setAnchorEl(e.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
 
   const isTransfer = transaction.type === 'transfer';
   const isInvestment = transaction.type === 'investment';
@@ -109,7 +127,7 @@ export const TransactionItem: React.FC<TransactionItemProps> = ({
           </Box>
         </Box>
 
-        {/* Amount & Time Display matching Mockups 2 & 3 */}
+        {/* Amount & Time Display */}
         <Box sx={{ textAlign: 'right', mr: 0.5 }}>
           <CurrencyText
             amount={transaction.amount}
@@ -122,49 +140,28 @@ export const TransactionItem: React.FC<TransactionItemProps> = ({
           </Typography>
         </Box>
 
-        <IconButton size="small" onClick={handleMenuOpen} sx={{ color: theme.palette.text.secondary, ml: 0.5 }}>
-          <MoreVertical size={18} />
-        </IconButton>
-
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-          slotProps={{
-            paper: {
-              sx: { borderRadius: '16px', minWidth: 150 },
+        {/* Dedicated Right Arrow Details Trigger Button */}
+        <IconButton
+          size="small"
+          onClick={(e) => {
+            e.stopPropagation();
+            setDetailsOpen(true);
+          }}
+          title="View Details"
+          sx={{
+            color: theme.palette.text.secondary,
+            ml: 1,
+            p: 0.5,
+            backgroundColor: 'transparent',
+            border: 'none',
+            '&:hover': {
+              backgroundColor: 'transparent',
+              color: theme.palette.primary.main,
             },
           }}
         >
-          <MenuItem
-            onClick={() => {
-              handleMenuClose();
-              setDetailsOpen(true);
-            }}
-          >
-            <Eye size={16} style={{ marginRight: 8 }} />
-            View Details
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              handleMenuClose();
-              onEdit(transaction);
-            }}
-          >
-            <Edit2 size={16} style={{ marginRight: 8 }} />
-            Edit
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              handleMenuClose();
-              onDelete(transaction.id);
-            }}
-            sx={{ color: theme.palette.error.main }}
-          >
-            <Trash2 size={16} style={{ marginRight: 8 }} />
-            Delete
-          </MenuItem>
-        </Menu>
+          <ChevronRight size={20} />
+        </IconButton>
       </Box>
 
       {/* Transaction Details Modal Popup */}
@@ -295,7 +292,7 @@ export const TransactionItem: React.FC<TransactionItemProps> = ({
               px: 3,
             }}
           >
-            Edit Transaction
+            Edit
           </Button>
         </DialogActions>
       </Dialog>

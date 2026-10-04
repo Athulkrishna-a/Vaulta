@@ -41,6 +41,7 @@ export const IncomeVsExpenseChart: React.FC = () => {
             <XAxis dataKey="name" stroke={theme.palette.text.secondary} fontSize={12} />
             <YAxis stroke={theme.palette.text.secondary} fontSize={12} />
             <Tooltip
+              cursor={false}
               formatter={(val: any) => [`₹${Number(val).toLocaleString()}`]}
               contentStyle={{
                 borderRadius: '12px',
@@ -49,8 +50,8 @@ export const IncomeVsExpenseChart: React.FC = () => {
               }}
             />
             <Legend wrapperStyle={{ paddingTop: 10 }} />
-            <Bar dataKey="Income" fill={theme.palette.income.main} radius={[4, 4, 0, 0]} />
-            <Bar dataKey="Expenses" fill={theme.palette.expense.main} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="Income" fill={theme.palette.income.main} radius={[4, 4, 0, 0]} style={{ outline: 'none' }} />
+            <Bar dataKey="Expenses" fill={theme.palette.expense.main} radius={[4, 4, 0, 0]} style={{ outline: 'none' }} />
           </BarChart>
         </ResponsiveContainer>
       </Box>

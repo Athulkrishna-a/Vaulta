@@ -25,29 +25,28 @@ export const TopHeader: React.FC = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        backgroundColor: 'rgba(15, 20, 32, 0.94)',
+        backgroundColor: theme.palette.mode === 'dark' ? 'rgba(15, 20, 32, 0.94)' : 'rgba(255, 255, 255, 0.94)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(0, 245, 160, 0.15)',
+        borderBottom: `1px solid ${theme.palette.divider}`,
         transition: 'all 0.2s ease',
       }}
     >
       {/* Avatar & Greeting */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
         <Avatar
+          src="/gemini-svg.svg"
+          alt="Vaulta Gemini Icon"
           sx={{
             width: 44,
             height: 44,
             borderRadius: '16px',
-            backgroundColor: '#00F5A0',
-            color: '#0B0E17',
-            fontWeight: 800,
-            fontSize: '1.1rem',
+            backgroundColor: '#031C0C',
+            border: '1.5px solid rgba(0, 245, 160, 0.4)',
             boxShadow: '0 4px 14px rgba(0, 245, 160, 0.35)',
+            p: 0.5,
           }}
-        >
-          👤
-        </Avatar>
+        />
         <Box>
           <Typography
             variant="caption"
@@ -69,7 +68,7 @@ export const TopHeader: React.FC = () => {
               fontFamily: 'Space Grotesk',
             }}
           >
-            Alex Morgan
+            Hi. Athul
           </Typography>
         </Box>
       </Box>
@@ -90,22 +89,6 @@ export const TopHeader: React.FC = () => {
           }}
         >
           <TrendingUp size={20} />
-        </IconButton>
-
-        <IconButton
-          onClick={() => navigate('/calculator')}
-          title="Calculator"
-          sx={{
-            backgroundColor: 'rgba(0, 245, 160, 0.1)',
-            color: '#00F5A0',
-            width: 42,
-            height: 42,
-            borderRadius: '14px',
-            border: '1px solid rgba(0, 245, 160, 0.18)',
-            '&:hover': { backgroundColor: 'rgba(0, 245, 160, 0.2)' },
-          }}
-        >
-          <Calculator size={20} />
         </IconButton>
 
         <Box sx={{ position: 'relative' }}>

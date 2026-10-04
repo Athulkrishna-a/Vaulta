@@ -234,15 +234,53 @@ export const InvestmentTypesPage: React.FC = () => {
             sx={{
               my: 2,
               '& label': { color: '#8A95AD', fontWeight: 600 },
+              '& label.MuiInputLabel-shrink': { backgroundColor: '#0F1420', px: 0.8, borderRadius: '4px', zIndex: 1 },
               '& input': { color: '#F4F6FC', fontWeight: 700, fontFamily: 'Space Grotesk' },
               '& .MuiOutlinedInput-root': {
                 borderRadius: '16px',
                 backgroundColor: 'rgba(255, 255, 255, 0.06)',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
-                '&.Mui-focused': { border: '1.5px solid #F1C40F' },
+                '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255, 255, 255, 0.15)' },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#F1C40F', borderWidth: '1.5px' },
               },
             }}
           />
+
+          <Typography variant="caption" sx={{ color: '#8A95AD', fontWeight: 700, fontFamily: 'Space Grotesk', mb: 1, display: 'block' }}>
+            CHOOSE ICON (SWIPE RIGHT →)
+          </Typography>
+
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateRows: 'repeat(2, auto)',
+              gridAutoFlow: 'column',
+              gap: 1,
+              overflowX: 'auto',
+              pb: 1,
+              '::-webkit-scrollbar': { display: 'none' },
+            }}
+          >
+            {['📈', '📊', '💎', '🏦', '💰', '🪙', '🏠', '⚡', '🚀', '🛡️', '💵', '🛒', '🎯', '🔒', '🎁', '🌐', '🏢', '🥇'].map((iconEmoji, i) => (
+              <Box
+                key={i}
+                sx={{
+                  width: 42,
+                  height: 42,
+                  borderRadius: '12px',
+                  backgroundColor: i === 0 ? 'rgba(241, 196, 15, 0.25)' : 'rgba(255, 255, 255, 0.05)',
+                  border: i === 0 ? '1.5px solid #F1C40F' : '1px solid rgba(255, 255, 255, 0.1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '1.1rem',
+                  cursor: 'pointer',
+                  '&:active': { transform: 'scale(0.92)' },
+                }}
+              >
+                {iconEmoji}
+              </Box>
+            ))}
+          </Box>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2.5, gap: 1 }}>
           <Button onClick={() => setDialogOpen(false)} sx={{ color: '#8A95AD', fontWeight: 700, fontFamily: 'Space Grotesk' }}>

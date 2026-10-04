@@ -94,20 +94,35 @@ const getBaseOptions = (palette: typeof lightPalette | typeof darkPalette): Them
   components: {
     MuiCssBaseline: {
       styleOverrides: {
-        body: {
+        'html, body': {
           backgroundColor: palette.background.default,
           color: palette.text.primary,
           userSelect: 'none',
           WebkitTapHighlightColor: 'transparent',
           overflowX: 'hidden',
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+        },
+        '*': {
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+        },
+        '*::-webkit-scrollbar': {
+          display: 'none',
+          width: '0px !important',
+          height: '0px !important',
+          background: 'transparent !important',
         },
         '::-webkit-scrollbar': {
-          width: '6px',
-          height: '6px',
+          display: 'none',
+          width: '0px !important',
+          height: '0px !important',
+          background: 'transparent !important',
         },
-        '::-webkit-scrollbar-thumb': {
-          backgroundColor: palette.divider,
-          borderRadius: '3px',
+        '.recharts-wrapper *:focus, .recharts-surface *:focus, .recharts-sector:focus, .recharts-pie-sector:focus, .recharts-bar-rectangle:focus, .recharts-rectangle:focus, .recharts-active-shape, .recharts-tooltip-cursor, svg *:focus': {
+          outline: 'none !important',
+          boxShadow: 'none !important',
+          WebkitTapHighlightColor: 'transparent !important',
         },
       },
     },
@@ -179,9 +194,37 @@ const getBaseOptions = (palette: typeof lightPalette | typeof darkPalette): Them
         },
       },
     },
+    MuiInputLabel: {
+      styleOverrides: {
+        outlined: {
+          '&.MuiInputLabel-shrink': {
+            backgroundColor: palette.mode === 'dark' ? '#0F1420' : '#FFFFFF',
+            padding: '0 6px',
+            borderRadius: '4px',
+            zIndex: 1,
+          },
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          borderRadius: 16,
+        },
+        notchedOutline: {
+          borderColor: palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.15)',
+        },
+      },
+    },
     MuiTextField: {
       styleOverrides: {
         root: {
+          '& label.MuiInputLabel-shrink': {
+            backgroundColor: palette.mode === 'dark' ? '#0F1420' : '#FFFFFF',
+            padding: '0 6px',
+            borderRadius: '4px',
+            zIndex: 1,
+          },
           '& .MuiOutlinedInput-root': {
             borderRadius: 16,
           },

@@ -16,7 +16,7 @@ export const TransactionFilterBar: React.FC<TransactionFilterBarProps> = ({
   onChange,
 }) => {
   const theme = useTheme();
-  const { categories } = useAppData();
+  const { categories, accounts } = useAppData();
   const [datePickerOpen, setDatePickerOpen] = useState<boolean>(false);
 
   const handleTypeChange = (type: FilterOptions['type']) => {
@@ -117,6 +117,21 @@ export const TransactionFilterBar: React.FC<TransactionFilterBarProps> = ({
           color={filters.type === 'transfer' ? 'secondary' : 'default'}
           variant={filters.type === 'transfer' ? 'filled' : 'outlined'}
         />
+
+        <TextField
+          select
+          size="small"
+          value={filters.accountId || 'all'}
+          onChange={(e) => onChange({ ...filters, accountId: e.target.value })}
+          sx={{ minWidth: 130, '& .MuiOutlinedInput-root': { borderRadius: '14px' } }}
+        >
+          <MenuItem value="all">All Accounts</MenuItem>
+          {accounts.map((acc) => (
+            <MenuItem key={acc.id} value={acc.id}>
+              {acc.name}
+            </MenuItem>
+          ))}
+        </TextField>
 
         <TextField
           select

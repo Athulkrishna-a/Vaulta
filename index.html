@@ -9,6 +9,31 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      html, body, * {
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+      }
+      *::-webkit-scrollbar, ::-webkit-scrollbar {
+        display: none !important;
+        width: 0px !important;
+        height: 0px !important;
+        background: transparent !important;
+      }
+      .recharts-wrapper *:focus,
+      .recharts-surface *:focus,
+      .recharts-sector:focus,
+      .recharts-pie-sector:focus,
+      .recharts-bar-rectangle:focus,
+      .recharts-rectangle:focus,
+      .recharts-active-shape,
+      .recharts-tooltip-cursor,
+      svg, svg *, path, rect, g {
+        outline: none !important;
+        box-shadow: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+      }
+    </style>
     <title>Vaulta — Personal Android Expense & Money Tracker</title>
   </head>
   <body>

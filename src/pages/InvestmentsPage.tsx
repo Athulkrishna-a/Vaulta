@@ -14,13 +14,13 @@ import { GlassCard } from '../components/common/GlassCard';
 import { CurrencyText } from '../components/common/CurrencyText';
 import { TransactionItem } from '../components/transactions/TransactionItem';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts';
-import { Transaction } from '../types';
+import { Transaction, TransactionType } from '../types';
 import { useNavigate } from 'react-router-dom';
 import { useHaptics } from '../hooks/useHaptics';
 
 interface InvestmentsPageProps {
   onEditTransaction: (tx: Transaction) => void;
-  onOpenAddInvestment: () => void;
+  onOpenAddInvestment: (type?: TransactionType) => void;
 }
 
 const ASSET_COLORS: Record<string, string> = {
@@ -97,22 +97,22 @@ export const InvestmentsPage: React.FC<InvestmentsPageProps> = ({
           </Box>
         </Box>
 
-        <Button
-          variant="contained"
-          size="small"
-          startIcon={<Plus size={16} />}
-          onClick={onOpenAddInvestment}
+        <IconButton
+          onClick={() => onOpenAddInvestment('investment')}
+          title="Add Investment"
           sx={{
+            width: 44,
+            height: 44,
             borderRadius: '16px',
-            backgroundColor: '#F1C40F',
-            color: '#000000',
-            fontWeight: 800,
-            fontFamily: 'Space Grotesk',
-            '&:hover': { backgroundColor: '#F39C12' },
+            backgroundColor: '#FFD600',
+            color: '#0B0E17',
+            boxShadow: '0 4px 14px rgba(255, 214, 0, 0.35)',
+            '&:hover': { backgroundColor: '#FFEA00' },
+            '&:active': { transform: 'scale(0.92)' },
           }}
         >
-          Add Investment
-        </Button>
+          <Plus size={22} strokeWidth={2.8} />
+        </IconButton>
       </Box>
 
       {/* Hero Portfolio Value Card */}
@@ -192,6 +192,9 @@ export const InvestmentsPage: React.FC<InvestmentsPageProps> = ({
                   outerRadius={85}
                   paddingAngle={4}
                   dataKey="value"
+                  stroke="none"
+                  activeShape={false}
+                  style={{ outline: 'none' }}
                 >
                   {assetBreakdown.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
@@ -265,7 +268,7 @@ export const InvestmentsPage: React.FC<InvestmentsPageProps> = ({
             <Button
               variant="outlined"
               size="small"
-              onClick={onOpenAddInvestment}
+              onClick={() => onOpenAddInvestment('investment')}
               sx={{ borderRadius: '14px' }}
             >
               Add First Investment

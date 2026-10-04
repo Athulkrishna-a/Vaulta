@@ -39,12 +39,15 @@ import {
   Vibrate,
   Bell,
   TrendingUp,
+  Cloud,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAppData } from '../app/providers/AppDataProvider';
 import { useAppTheme } from '../app/providers/ThemeProvider';
 import { useSecurity } from '../app/providers/SecurityProvider';
 import { BackupRestoreDialog } from '../components/settings/BackupRestoreDialog';
+import { GoogleDriveBackupDialog } from '../components/settings/GoogleDriveBackupDialog';
+import { backupService } from '../services/BackupService';
 import { useNavigate } from 'react-router-dom';
 import { CurrencyCode, DateFormatOption, PaymentMethod } from '../types';
 import { useHaptics } from '../hooks/useHaptics';
@@ -59,6 +62,14 @@ export const SettingsPage: React.FC = () => {
 
   const [backupDialogOpen, setBackupDialogOpen] = useState<boolean>(false);
   const [budgetDialogOpen, setBudgetDialogOpen] = useState<boolean>(false);
+
+  React.useEffect(() => {
+    backupService.initBackgroundSync(() => ({
+      autoBackup: settings.driveBackup?.autoBackup || false,
+      interval: settings.driveBackup?.interval || 'weekly',
+      lastBackupTimestamp: settings.driveBackup?.lastBackupTimestamp,
+    }));
+  }, [settings.driveBackup]);
   const [budgetValue, setBudgetValue] = useState<string>(
     currentBudget ? currentBudget.amount.toString() : '30000'
   );
@@ -258,7 +269,7 @@ export const SettingsPage: React.FC = () => {
             <ListItemIcon>
               <Vibrate color={theme.palette.primary.main} size={20} />
             </ListItemIcon>
-            <ListItemText primary="Haptic Vibration Feedback" secondary="Vibrate on button press & transaction saves" />
+            <ListItemText primary="Haptic Vibration Feedback" secondary="Vibrate on bottom navbar actions only (Reduced intensity)" />
             <Switch
               checked={settings.haptics ?? true}
               onChange={(e) => updateSettings({ haptics: e.target.checked })}
@@ -365,11 +376,25 @@ export const SettingsPage: React.FC = () => {
           <Divider sx={{ mx: 2, my: 0.5 }} />
 
           <ListItem disablePadding sx={{ mb: 0.5 }}>
-            <ListItemButton onClick={() => navigate('/accounts')} sx={{ borderRadius: '16px' }}>
+            <ListItemButton onClick={() => navigate('/manage-accounts')} sx={{ borderRadius: '16px' }}>
               <ListItemIcon>
                 <Wallet color={theme.palette.primary.main} size={20} />
               </ListItemIcon>
-              <ListItemText primary="Manage Accounts & Wallets" secondary="Cash, Bank, UPI, Credit Card" />
+              <ListItemText primary="Organize Accounts & Cards" secondary="Reorder card view, edit details or delete accounts" />
+              <ChevronRight size={18} color={theme.palette.text.disabled} />
+            </ListItemButton>
+          </ListItem>
+          <Divider sx={{ mx: 2, my: 0.5 }} />
+
+          <ListItem disablePadding sx={{ mb: 0.5 }}>
+            <ListItemButton onClick={() => navigate('/cloud-backup')} sx={{ borderRadius: '16px' }}>
+              <ListItemIcon>
+                <Cloud color="#00F5A0" size={20} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Supabase Cloud Backup"
+                secondary={settings.driveBackup?.connected ? `Connected (${settings.driveBackup.userEmail || 'Cloud storage ready'})` : 'Sign in & backup JSON to Supabase Cloud'}
+              />
               <ChevronRight size={18} color={theme.palette.text.disabled} />
             </ListItemButton>
           </ListItem>
@@ -380,7 +405,7 @@ export const SettingsPage: React.FC = () => {
               <ListItemIcon>
                 <Database color={theme.palette.primary.main} size={20} />
               </ListItemIcon>
-              <ListItemText primary="Backup & Restore Data" secondary="Export JSON/CSV or import backup" />
+              <ListItemText primary="Local Export & Import" secondary="Export JSON file to device or import backup" />
               <ChevronRight size={18} color={theme.palette.text.disabled} />
             </ListItemButton>
           </ListItem>
@@ -455,15 +480,14 @@ export const SettingsPage: React.FC = () => {
           Offline-First & Private
         </Typography>
         <Typography variant="body2" sx={{ color: theme.palette.text.secondary, mt: 1 }}>
-          ExpenseTrack stores 100% of your financial data locally on your device. No cloud account or external
-          servers are required.
+          ExpenseTrack stores 100% of your financial data locally on your device. Cloud backup encrypts data before sending.
         </Typography>
         <Typography variant="caption" sx={{ display: 'block', color: theme.palette.text.disabled, mt: 2 }}>
           ExpenseTrack v1.0.0 (Capacitor Android Build)
         </Typography>
       </Paper>
 
-      {/* Backup & Restore Dialog */}
+      {/* Local Export & Import Dialog */}
       <BackupRestoreDialog open={backupDialogOpen} onClose={() => setBackupDialogOpen(false)} />
 
       {/* Budget Set Dialog */}

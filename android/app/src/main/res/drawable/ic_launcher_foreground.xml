@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+    <!-- Base Deep Midnight Forest -->
+    <path
+        android:fillColor="#031C0C"
+        android:pathData="M0,0h512v512h-512z" />
+
+    <!-- Top Outflow Arc (Electric Volt Lime) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#C6FF2E"
+        android:strokeWidth="26"
+        android:strokeLineCap="round"
+        android:pathData="M170,236 C170,178 214,136 276,136 C328,136 366,170 374,216" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#C6FF2E"
+        android:strokeWidth="26"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M352,232 L378,214 L396,244" />
+
+    <!-- Bottom Inflow Arc (Neon Mint) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#00E676"
+        android:strokeWidth="26"
+        android:strokeLineCap="round"
+        android:pathData="M342,276 C342,334 298,376 236,376 C184,376 146,342 138,296" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#00E676"
+        android:strokeWidth="26"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M160,280 L134,298 L116,268" />
+</vector>

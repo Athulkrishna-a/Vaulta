@@ -46,6 +46,7 @@ export const MonthlyComparisonChart: React.FC = () => {
             <XAxis dataKey="label" stroke={theme.palette.text.secondary} fontSize={12} tickLine={false} />
             <YAxis stroke={theme.palette.text.secondary} fontSize={12} tickLine={false} />
             <Tooltip
+              cursor={false}
               formatter={(val: any) => [`₹${Number(val).toLocaleString()}`, 'Spent']}
               contentStyle={{
                 borderRadius: '16px',
@@ -59,6 +60,7 @@ export const MonthlyComparisonChart: React.FC = () => {
               dataKey="expense"
               fill={theme.palette.primary.main}
               radius={[8, 8, 0, 0]}
+              style={{ outline: 'none' }}
               isAnimationActive={true}
               animationDuration={1000}
             />

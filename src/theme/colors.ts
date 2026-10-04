@@ -1,62 +1,62 @@
 export const lightPalette = {
   mode: 'light' as const,
   primary: {
-    main: '#00E676', // Cyber Emerald Green
-    contrastText: '#0B0E17',
+    main: '#00B36B', // Crisp Emerald Green for Light Mode
+    contrastText: '#FFFFFF',
     container: '#D4F8E8',
-    onContainer: '#0B0E17',
+    onContainer: '#04341B',
   },
   secondary: {
-    main: '#7C4DFF', // Vibrant Electric Violet
+    main: '#651FFF', // Electric Violet
     contrastText: '#FFFFFF',
     container: '#EDE7F6',
     onContainer: '#1A0066',
   },
   tertiary: {
-    main: '#FFD600', // Cyber Gold
-    contrastText: '#0B0E17',
+    main: '#F57F17', // Gold Amber
+    contrastText: '#FFFFFF',
     container: '#FFFDE7',
     onContainer: '#332B00',
   },
   error: {
-    main: '#FF5252',
+    main: '#D32F2F',
     contrastText: '#FFFFFF',
     container: '#FFDAD6',
     onContainer: '#410002',
   },
   income: {
-    main: '#00E676',
-    contrastText: '#0B0E17',
-    container: 'rgba(0, 230, 118, 0.18)',
-    onContainer: '#0B0E17',
+    main: '#00B36B',
+    contrastText: '#FFFFFF',
+    container: 'rgba(0, 179, 107, 0.12)',
+    onContainer: '#04341B',
   },
   expense: {
-    main: '#FF5252',
+    main: '#D32F2F',
     contrastText: '#FFFFFF',
-    container: 'rgba(255, 82, 82, 0.18)',
-    onContainer: '#FF5252',
+    container: 'rgba(211, 47, 47, 0.12)',
+    onContainer: '#D32F2F',
   },
   transfer: {
-    main: '#7C4DFF',
+    main: '#651FFF',
     contrastText: '#FFFFFF',
-    container: 'rgba(124, 77, 255, 0.18)',
-    onContainer: '#7C4DFF',
+    container: 'rgba(101, 31, 255, 0.12)',
+    onContainer: '#651FFF',
   },
   background: {
-    default: '#0B0E17',
-    paper: 'rgba(18, 24, 38, 0.82)',
-    glass: 'rgba(15, 20, 32, 0.78)',
-    glassBorder: 'rgba(0, 230, 118, 0.16)',
-    surfaceContainer: '#121724',
-    surfaceContainerHigh: '#182030',
-    surfaceContainerHighest: '#202A3E',
+    default: '#F4F6FC', // Clean Light Background
+    paper: '#FFFFFF',    // Pure White Card Surface
+    glass: 'rgba(255, 255, 255, 0.92)',
+    glassBorder: 'rgba(0, 179, 107, 0.2)',
+    surfaceContainer: '#EDF2F7',
+    surfaceContainerHigh: '#E2E8F0',
+    surfaceContainerHighest: '#CBD5E1',
   },
   text: {
-    primary: '#F4F6FC',
-    secondary: '#8A95AD',
-    disabled: '#535F7A',
+    primary: '#0B0E17',   // Crisp Dark Text
+    secondary: '#475569', // Soft Slate Gray Text
+    disabled: '#94A3B8',
   },
-  divider: 'rgba(0, 230, 118, 0.14)',
+  divider: 'rgba(0, 0, 0, 0.08)',
 };
 
 export const darkPalette = {
